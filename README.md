@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jurajcik/wuzeln.svg?branch=master)](https://travis-ci.org/jurajcik/wuzeln)
+
 # Wuzeln Manager
 
 ## Building with Maven
