@@ -2,5 +2,6 @@
 *.iml
 node/
 target/
+all.log
 
 frontend/src/app/services/httpModel.d.ts
