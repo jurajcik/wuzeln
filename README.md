@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/jurajcik/wuzeln.svg?branch=master)](https://travis-ci.org/jurajcik/wuzeln)
+[![Build Status](https://travis-ci.org/jurajcik/wuzeln.svg?branch=master)](https://travis-ci.org/jurajcik/wuzeln) [![codecov](https://codecov.io/gh/jurajcik/wuzeln/branch/master/graph/badge.svg)](https://codecov.io/gh/jurajcik/wuzeln)
+
 
 # Wuzeln Manager
 
