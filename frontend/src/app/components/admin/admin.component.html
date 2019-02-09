@@ -1,0 +1,52 @@
+<div class="col-lg-10 offset-lg-1">
+
+  <h1>Administration</h1>
+
+  <h2>User Accounts</h2>
+  <div class="mat-elevation-z4" [hidden]="userAccounts.length == 0" style="margin-bottom: 15px">
+    <table mat-table #userAccountsSort="matSort" matSort [dataSource]="userAccountsDataSource" matSortActive="username"
+           matSortDirection="asc">
+
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Username</th>
+        <td mat-cell *matCellDef="let one"> {{one.username}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="googleAccountId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Google Account ID</th>
+        <td mat-cell *matCellDef="let one"> {{one.googleAccountId}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+        <td mat-cell *matCellDef="let one"> {{one.createdDate | date: dateFormat}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="registered">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Active User</th>
+        <td mat-cell *matCellDef="let one">
+          <mat-slide-toggle [(ngModel)]="one.registered"></mat-slide-toggle>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="admin">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Administrator</th>
+        <td mat-cell *matCellDef="let one">
+          <mat-slide-toggle [(ngModel)]="one.admin"></mat-slide-toggle>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="save">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let one">
+          <button mat-raised-button color="primary" (click)="updateUserAccount(one)">Save</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="userAccountsDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: userAccountsDisplayedColumns;"></tr>
+    </table>
+    <mat-paginator #userAccountsPaginator [pageSizeOptions]="[20, 100, 1000]" showFirstLastButtons></mat-paginator>
+  </div>
+
+</div>

@@ -1,0 +1,27 @@
+<ng-http-loader [spinner]="matSpinner" [entryComponent]="matSpinner"></ng-http-loader>
+<header>
+  <mat-toolbar color="primary" class="mat-elevation-z3">
+    <mat-toolbar-row>
+      <div *ngIf="registered">
+        <button mat-button (click)="router.navigate(['/'])"><h1>Wuzeln</h1></button>
+        <button mat-button (click)="router.navigate(['/scores'])" class="font-weight-bold">Scores</button>
+      </div>
+      <div *ngIf="!registered">
+        <button mat-button (click)="router.navigate(['/public'])"><h1>Wuzeln</h1></button>
+      </div>
+      <span class="example-spacer"></span>
+      <div *ngIf="registered" class="greeting">
+        Hi, {{username}}!
+      </div>
+      <div *ngIf="admin">
+        <button mat-button (click)="router.navigate(['/admin'])" class="font-weight-bold"><i class="material-icons fame-icon">settings</i></button>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</header>
+
+<section class="container">
+  <router-outlet></router-outlet>
+</section>
+
+<footer style="margin-bottom: 30px"></footer>

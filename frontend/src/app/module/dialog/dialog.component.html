@@ -1,0 +1,10 @@
+<h3 mat-dialog-title>{{title}}</h3>
+
+<mat-dialog-content *ngIf="text">
+  {{text}}
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" *ngIf="showCloseButton" (click)="close()">Close</button>
+  <button class="mat-raised-button mat-primary" *ngIf="showConfirmButton" (click)="confirm()">Confirm</button>
+</mat-dialog-actions>

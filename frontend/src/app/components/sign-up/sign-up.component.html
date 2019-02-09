@@ -1,0 +1,24 @@
+<div class="col-lg-8 offset-lg-2">
+
+  <h1>Sign Up</h1>
+
+  <p>You are authenticated as <span class="font-weight-bold">{{fullName}}</span>. The Wuzeln manager is not
+    storing any personal data, only your Google Account ID.</p>
+
+    <form name="form" class="sign-up-form" (ngSubmit)="submit()" [formGroup]="registerForm">
+
+      <mat-form-field appearance="standard">
+        <mat-label>Username</mat-label>
+        <input name="username" formControlName="username" matInput placeholder="Username" >
+        <mat-hint>The name can be changed later</mat-hint>
+        <mat-error *ngIf="f.username.invalid">{{usernameValidationText}}</mat-error>
+      </mat-form-field>
+
+      <div class="form-group" class="submit">
+        <button mat-raised-button color="primary">Submit</button>
+      </div>
+
+    </form>
+
+
+</div>

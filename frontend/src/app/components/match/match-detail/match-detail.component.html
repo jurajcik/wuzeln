@@ -1,0 +1,42 @@
+<div *ngIf="match">
+  <div [ngSwitch]="match.state">
+
+    <div *ngSwitchCase="'CREATED'">
+      <h1 class="text-center">{{match.name}}</h1>
+      <app-match-view viewOnly="true" [personsBlue]="personsBlue" [personsRed]="personsRed"></app-match-view>
+      <div class="start">
+        <button mat-fab (click)="startMatch()">Start!</button>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'STARTED'">
+      <h2 class="text-center">{{match.name}}</h2>
+      <div class="row">
+        <div class="col-12">
+          <h2 class="text-center">
+            <span class="red">{{match.redTeam.goals}}</span> :
+            <span class="blue">{{match.blueTeam.goals}}</span></h2>
+        </div>
+      </div>
+      <app-match-view viewOnly="false" [personsBlue]="personsBlue" [personsRed]="personsRed"
+                      (kicked)="kickGoal($event)"></app-match-view>
+      <div class="row">
+        <div class="offset-md-3">
+
+          <mat-slide-toggle [(ngModel)]="ownGoal" class="ownGoal">own goal :(</mat-slide-toggle>
+          <div *ngIf="match.lastGoal && lastGoalPerson" class="ownGoal">
+            <p> The last goal shot by
+              <a href="javascript:void(0)" (click)="revertLastGoal()" matTooltip="Click to revert the last goal">
+                {{lastGoalPerson.name}}</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'FINISHED'">
+      <app-match-finished [matchDetail]="match"></app-match-finished>
+    </div>
+
+  </div>
+</div>
+

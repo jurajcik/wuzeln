@@ -1,0 +1,38 @@
+@import "../../../../variables";
+
+.person-name {
+  margin-bottom: 4px;
+}
+
+.group {
+  margin-bottom: 10px;
+}
+
+div.player {
+
+  display: inline-block;
+  padding: 5px;
+  width: 100%;
+
+  mat-card {
+    padding: 14px;
+  }
+}
+
+mat-card-content.team {
+  min-height: 100px;
+}
+
+.player.hidden {
+  display: none;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}

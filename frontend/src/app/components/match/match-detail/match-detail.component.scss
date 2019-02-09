@@ -1,0 +1,27 @@
+@import "../../../../variables";
+
+span.red {
+  color: $color-team-red;
+}
+
+span.blue {
+  color: $color-team-blue;
+}
+
+div.start {
+  display: table;
+  margin: 0 auto;
+  padding-top: 20px;
+
+  button {
+    background-color: $color-team-red;
+    width: 56px;
+    margin: 0 auto;
+  }
+}
+
+.ownGoal{
+  margin-top: 20px;
+  margin-left: 25px;
+  margin-bottom: 10px;
+}

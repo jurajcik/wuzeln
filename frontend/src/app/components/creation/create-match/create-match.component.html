@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="col-md-6 col-lg-5 group" #poolElement>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Match name" [(ngModel)]="name">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Unassigned players" value="Sushi" style="display: none">
+      <div droppable (onDrop)="onDropInPool($event)">
+        <div class="col-6 col-lg-6 col-xl-4 player" *ngFor="let item of players">
+          <mat-card draggable [dragData]="item" (onDragStart)="onDragFromPool(teamsElement, item)">
+            <mat-card-content>
+              <p class="person-name"> {{item.name}}
+                <span>
+                  <mat-checkbox *ngIf="allSlotsAreFull()" [(ngModel)]="item.canNotPlay" style="float: right;"
+                                matTooltip="This person can not take part in the match because there are no free slots."></mat-checkbox>
+                </span>
+              </p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-form-field>
+
+  </div>
+
+  <mat-card class="col-md-6 offset-md-0 col-lg-6 offset-lg-1 group assigned">
+    <mat-card-title>Match</mat-card-title>
+    <mat-card-content #teamsElement>
+      <div class="row">
+        <div class="col-6 offset-3 goal red">
+        </div>
+      </div>
+      <div class="row">
+        <app-position class="col-6 col-lg-6" title="Goalkeeper" customClass="red" [teamArray]="playersRed" position="0"
+                      (onDrop)="onDropInTeam($event, poolElement, playersRed, 0)"></app-position>
+        <app-position class="col-6 col-lg-6" title="Forward" customClass="blue" [teamArray]="playersBlue" position="3"
+                      (onDrop)="onDropInTeam($event, poolElement, playersBlue, 3)"></app-position>
+      </div>
+      <div class="row">
+        <app-position class="col-6 col-lg-6" title="Defender" customClass="red" [teamArray]="playersRed" position="1"
+                      (onDrop)="onDropInTeam($event, poolElement, playersRed, 1)"></app-position>
+        <app-position class="col-6 col-lg-6" title="Midfielder" customClass="blue" [teamArray]="playersBlue"
+                      position="2" (onDrop)="onDropInTeam($event, poolElement, playersBlue, 2)"></app-position>
+      </div>
+      <div class="row">
+        <app-position class="col-6 col-lg-6" title="Midfielder" customClass="red" [teamArray]="playersRed" position="2"
+                      (onDrop)="onDropInTeam($event, poolElement, playersRed, 2)"></app-position>
+        <app-position class="col-6 col-lg-6" title="Defender" customClass="blue" [teamArray]="playersBlue" position="1"
+                      (onDrop)="onDropInTeam($event, poolElement, playersBlue, 1)"></app-position>
+      </div>
+      <div class="row">
+        <app-position class="col-6 col-lg-6" title="Forward" [customClass]="'red'" [teamArray]="playersRed" position="3"
+                      (onDrop)="onDropInTeam($event, poolElement, playersRed, 3)"></app-position>
+        <app-position class="col-6 col-md-6 " title="Goalkeeper" customClass="blue" [teamArray]="playersBlue"
+                      position="0"
+                      (onDrop)="onDropInTeam($event, poolElement, playersBlue, 0)"></app-position>
+      </div>
+      <div class="row">
+        <div class="col-6 offset-3 goal blue">
+        </div>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>
+<div class="row">
+  <div class="col-12">
+    <button mat-raised-button color="accent" (click)="createMatch()" class="create-match">Create Match</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

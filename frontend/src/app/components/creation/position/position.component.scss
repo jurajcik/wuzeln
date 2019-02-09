@@ -1,0 +1,25 @@
+@import "../../../../variables";
+
+mat-card.team-slot {
+  margin-bottom: 10px;
+  padding: 10px;
+
+  &.red {
+    background-color: $color-team-red;
+  }
+
+  &.blue {
+    background-color: $color-team-blue;
+  }
+
+  mat-card-subtitle {
+    color: white;
+    margin-bottom: 10px;
+  }
+}
+
+mat-card.assigned{
+  padding: 12px 16px 12px 16px !important;
+}
+
+

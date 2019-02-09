@@ -1,0 +1,100 @@
+<h1>Weekly Hall of Fame</h1>
+
+<div class="row">
+  <div class="col-md-3 col-6 text-center fame-item">
+    <mat-card class="mat-elevation-z4" matTooltip="Best player
+  score = {{(topPlayer ? topPlayer.score : 0) | number}}">
+      <p style="padding-left: 1px; padding-right: 1px">Master of Wuzeln</p>
+      <p><i class="material-icons fame-icon">star_border</i></p>
+      <p *ngIf="topPlayer && topPlayer.score > 0"><span
+        class="font-weight-bold fame-name">{{topPlayer.person.name}}</span></p>
+    </mat-card>
+  </div>
+
+  <div class="col-md-3 col-6 text-center fame-item">
+    <mat-card class="mat-elevation-z4" matTooltip="Best offensive player
+  score = {{(topOffensive ? topOffensive.score : 0) | number}}">
+      <p>Master of Offense</p>
+      <p><i class="material-icons fame-icon">flash_on</i></p>
+      <p *ngIf="topOffensive && topOffensive.score > 0"><span class="font-weight-bold fame-name">{{topOffensive.person.name}}</span>
+      </p>
+    </mat-card>
+  </div>
+
+  <div class="col-md-3 col-6 text-center fame-item">
+    <mat-card class="mat-elevation-z4" matTooltip="Best defensive player
+  score = {{(topDefensive ? topDefensive.score : 0) | number}}">
+      <p>Master of Defense</p>
+      <p><i class="material-icons fame-icon">security</i></p>
+      <p *ngIf="topDefensive && topDefensive.score > 0"><span class="font-weight-bold fame-name">{{topDefensive.person.name}}</span>
+      </p>
+    </mat-card>
+  </div>
+
+  <div class="col-md-3 col-6 text-center fame-item">
+    <mat-card class="mat-elevation-z4"
+              matTooltip="Most own goals shot = {{(topOwnGoals ? topOwnGoals.score : 0) | number}}">
+      <p>Master of Confusion</p>
+      <p><i class="material-icons fame-icon">gesture</i></p>
+      <p *ngIf="topOwnGoals && topOwnGoals.score > 0"><span
+        class="font-weight-bold fame-name">{{topOwnGoals.person.name}}</span></p>
+    </mat-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-6">
+    <h1>New Match</h1>
+    <div *ngIf="registration">
+      <p>Join opened registration for a new match:
+        <button mat-raised-button color="primary" (click)="router.navigate(['/registrations/'+registration.id])">
+          {{registration.name}}
+        </button>
+      </p>
+    </div>
+    <div *ngIf="!registration">
+      <p>Create new registration:
+        <button mat-raised-button color="accent" (click)="createRegistration()">Create Registration
+        </button>
+      </p>
+    </div>
+    <p>Manually create new match:
+      <button mat-raised-button color="primary" (click)="router.navigate(['/create-match'])">Match Creation
+      </button>
+    </p>
+  </div>
+
+  <div class="col-lg-6">
+    <h1>Played Matches</h1>
+    <div class="mat-elevation-z4">
+      <table mat-table #matchSort="matSort" matSort [dataSource]="matchDataSource" matSortActive="createdDate"
+             matSortDirection="desc">
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let match"> {{match.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+          <td mat-cell *matCellDef="let match"> {{match.createdDate | date: dateFormat}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="stateSort">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>State</th>
+          <td mat-cell *matCellDef="let match"> {{match.state}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="matchDisplayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: matchDisplayedColumns;" class="clickable-row"
+            matTooltip="Click for more details" matTooltipShowDelay="1000"
+            (click)="router.navigate(['/matches/'+row.id])"></tr>
+      </table>
+      <mat-paginator #matchPaginator [pageSizeOptions]="[5, 10, 100]" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+</div>
+
+
+
+

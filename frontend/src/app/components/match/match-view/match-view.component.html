@@ -1,0 +1,64 @@
+<div class="row">
+  <div class="col-md-6 offset-md-3 goal red">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 col-6 offset-md-3">
+    <button class="player red" mat-raised-button [disabled]="!personsRed[0] || viewOnly"
+            (click)="kickGoal(personsRed[0])">
+      <span *ngIf="personsRed[0]">{{personsRed[0].name}}</span>
+    </button>
+  </div>
+  <div class="col-md-3 col-6">
+    <button class="player blue" mat-raised-button [disabled]="!personsBlue[3] || viewOnly"
+            (click)="kickGoal(personsBlue[3])">
+      <span *ngIf="personsBlue[3]">{{personsBlue[3].name}}</span>
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 col-6 offset-md-3">
+    <button class="player red" mat-raised-button [disabled]="!personsRed[1] || viewOnly"
+            (click)="kickGoal(personsRed[1])">
+      <span *ngIf="personsRed[1]">{{personsRed[1].name}}</span>
+    </button>
+  </div>
+  <div class="col-md-3 col-6">
+    <button class="player blue" mat-raised-button [disabled]="!personsBlue[2] || viewOnly"
+            (click)="kickGoal(personsBlue[2])">
+      <span *ngIf="personsBlue[2]">{{personsBlue[2].name}}</span>
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 col-6 offset-md-3">
+    <button class="player red" mat-raised-button [disabled]="!personsRed[2] || viewOnly"
+            (click)="kickGoal(personsRed[2])">
+      <span *ngIf="personsRed[2]">{{personsRed[2].name}}</span>
+    </button>
+  </div>
+  <div class="col-md-3 col-6">
+    <button class="player blue" mat-raised-button [disabled]="!personsBlue[1] || viewOnly"
+            (click)="kickGoal(personsBlue[1])">
+      <span *ngIf="personsBlue[1]">{{personsBlue[1].name}}</span>
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 col-6 offset-md-3">
+    <button class="player red" mat-raised-button [disabled]="!personsRed[3] || viewOnly"
+            (click)="kickGoal(personsRed[3])">
+      <span *ngIf="personsRed[3]">{{personsRed[3].name}}</span>
+    </button>
+  </div>
+  <div class="col-md-3 col-6">
+    <button class="player blue" mat-raised-button [disabled]="!personsBlue[0] || viewOnly"
+            (click)="kickGoal(personsBlue[0])">
+      <span *ngIf="personsBlue[0]">{{personsBlue[0].name}}</span>
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 offset-md-3 goal blue">
+  </div>
+</div>

@@ -1,0 +1,6 @@
+.idea/
+*.iml
+node/
+target/
+
+frontend/src/app/services/httpModel.d.ts

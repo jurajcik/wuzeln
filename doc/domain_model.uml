@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Persistence</ID>
+  <OriginalElement>JavaeeElement:/cc758e8e/entityManagerFactory/wuzeln/jpa/JPA/PersistenceModel</OriginalElement>
+  <nodes>
+    <node x="625.0" y="432.5">Player#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Player.kt</node>
+    <node x="357.5" y="421.5">Goal#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Goal.kt</node>
+    <node x="888.0" y="210.5">Match#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Match.kt</node>
+    <node x="1178.0" y="243.5">Registration#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Registration.kt</node>
+    <node x="-38.0" y="3.5">Role#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Role.kt</node>
+    <node x="926.5" y="443.5">Person#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Person.kt</node>
+    <node x="186.0" y="-18.5">UserAccount#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/UserAccount.kt</node>
+    <node x="891.5" y="-18.5">EntityMetadata#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/EntityMetadata.kt</node>
+    <node x="647.0" y="232.5">Team#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Team.kt</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="UserAccount#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/UserAccount.kt" target="Role#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Role.kt">
+      <point x="-94.0" y="-0.0" />
+      <point x="78.0" y="-0.0" />
+    </edge>
+    <edge source="Player#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Player.kt" target="Goal#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Goal.kt">
+      <point x="-95.0" y="-0.0" />
+      <point x="82.5" y="-0.0" />
+    </edge>
+    <edge source="Team#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Team.kt" target="Match#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Match.kt">
+      <point x="73.0" y="-0.0" />
+      <point x="-112.0" y="-0.0" />
+    </edge>
+    <edge source="Registration#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Registration.kt" target="Match#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Match.kt">
+      <point x="-62.0" y="-0.0" />
+      <point x="112.0" y="-0.0" />
+    </edge>
+    <edge source="Registration#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Registration.kt" target="EntityMetadata#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/EntityMetadata.kt">
+      <point x="0.0" y="-36.5" />
+      <point x="1240.0" y="40.0" />
+      <point x="108.5" y="-0.0" />
+    </edge>
+    <edge source="Match#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Match.kt" target="Team#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Team.kt">
+      <point x="-40.0" y="-69.5" />
+      <point x="960.0" y="160.0" />
+      <point x="720.0" y="160.0" />
+      <point x="0.0" y="-47.5" />
+    </edge>
+    <edge source="UserAccount#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/UserAccount.kt" target="EntityMetadata#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/EntityMetadata.kt">
+      <point x="94.0" y="-0.0" />
+      <point x="-108.5" y="-0.0" />
+    </edge>
+    <edge source="Goal#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Goal.kt" target="EntityMetadata#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/EntityMetadata.kt">
+      <point x="0.0" y="-58.5" />
+      <point x="440.0" y="80.0" />
+      <point x="-108.5" y="40.0" />
+    </edge>
+    <edge source="Registration#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Registration.kt" target="Person#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Person.kt">
+      <point x="0.0" y="36.5" />
+      <point x="1240.0" y="480.0" />
+      <point x="73.5" y="-0.0" />
+    </edge>
+    <edge source="Match#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Match.kt" target="EntityMetadata#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/EntityMetadata.kt">
+      <point x="0.0" y="-69.5" />
+      <point x="0.0" y="58.5" />
+    </edge>
+    <edge source="Team#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Team.kt" target="Team#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Team.kt">
+      <point x="-40.0" y="-47.5" />
+      <point x="680.0" y="160.0" />
+      <point x="560.0" y="160.0" />
+      <point x="560.0" y="280.0" />
+      <point x="-73.0" y="-0.0" />
+    </edge>
+    <edge source="Player#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Player.kt" target="Player#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Player.kt">
+      <point x="0.0" y="47.5" />
+      <point x="720.0" y="600.0" />
+      <point x="880.0" y="600.0" />
+      <point x="880.0" y="520.0" />
+      <point x="95.0" y="40.0" />
+    </edge>
+    <edge source="Person#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Person.kt" target="Match#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Match.kt">
+      <point x="0.0" y="-36.5" />
+      <point x="0.0" y="69.5" />
+    </edge>
+    <edge source="Goal#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Goal.kt" target="Player#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Player.kt">
+      <point x="0.0" y="58.5" />
+      <point x="440.0" y="600.0" />
+      <point x="680.0" y="600.0" />
+      <point x="-40.0" y="47.5" />
+    </edge>
+    <edge source="Person#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Person.kt" target="UserAccount#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/UserAccount.kt">
+      <point x="0.0" y="36.5" />
+      <point x="1000.0" y="640.0" />
+      <point x="280.0" y="640.0" />
+      <point x="0.0" y="58.5" />
+    </edge>
+    <edge source="Player#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Player.kt" target="Team#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Team.kt">
+      <point x="0.0" y="-47.5" />
+      <point x="0.0" y="47.5" />
+    </edge>
+    <edge source="Person#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Person.kt" target="Player#file://C:/Users/Juraj/Documents/dokumenty/projects/wuzeln/src/main/kotlin/at/jc/wuzeln/model/Player.kt">
+      <point x="-73.5" y="-0.0" />
+      <point x="95.0" y="-0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="698.0" y="361.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Embeddables</Category>
+    <Category>Properties</Category>
+  </Categories>
+</Diagram>
+

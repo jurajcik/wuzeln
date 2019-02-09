@@ -1,0 +1,154 @@
+<h1>Personal Scores</h1>
+
+<div class="row">
+  <div class="col-md-3">
+    <mat-form-field>
+      <input matInput [min]="minFrom" [max]="to" [matDatepicker]="pickerFrom" placeholder="Choose a start date"
+             [(ngModel)]="from" (change)="changedFrom">
+      <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+      <mat-datepicker #pickerFrom></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div class="col-md-3">
+    <mat-form-field>
+      <input matInput [min]="from" [max]="maxTo" [matDatepicker]="pickerTo" placeholder="Choose an end date"
+             [(ngModel)]="to" (change)="changedTo">
+      <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+      <mat-datepicker #pickerTo></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div class="col-md-3">
+    <button mat-raised-button color="primary" (click)="refresh()" style="margin-bottom: 1.5em">Reload</button>
+  </div>
+</div>
+
+
+<div class="mat-elevation-z4" style="margin-bottom: 30px">
+  <mat-table #sort="matSort" matSort [dataSource]="dataSource" matSortActive="name" matSortDirection="asc">
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+      <mat-cell *matCellDef="let person"> {{person.name}}
+        <i class="material-icons" matTooltip="Master of Wuzeln"
+           *ngIf="topPlayers && person.id == topPlayers.playerId">star</i>
+        <i class="material-icons" matTooltip="Master of Offense"
+           *ngIf="topPlayers && person.id == topPlayers.offensiveId">flash_on</i>
+        <i class="material-icons" matTooltip="Master of Defense"
+           *ngIf="topPlayers && person.id == topPlayers.defensiveId">security</i>
+        <i class="material-icons" matTooltip="Master of Confusion"
+           *ngIf="topPlayers && person.id == topPlayers.ownGoalsId">gesture</i>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="matchesPlayed">
+      <mat-header-cell *matHeaderCellDef mat-sort-header># Matches</mat-header-cell>
+      <mat-cell *matCellDef="let person"> {{person.matchesPlayed}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="scoreIdle">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Active Score</mat-header-cell>
+      <mat-cell *matCellDef="let person"> {{person.scoreIdle | number : '.2-2'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="scoreOffensive">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Offensive Score</mat-header-cell>
+      <mat-cell *matCellDef="let person"> {{person.scoreOffensiveNormalized | number : '.2-2'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="scoreDefensive">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Defensive Score</mat-header-cell>
+      <mat-cell *matCellDef="let person"> {{person.scoreDefensiveNormalized | number: '.2-2'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="scoreNormalized">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Score</mat-header-cell>
+      <mat-cell *matCellDef="let person"> {{(person.scoreNormalized) | number: '.2-2'}}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple class="element-row clickable-row"
+             matTooltip="Click to show/hide details" matTooltipShowDelay="1000"
+             [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl"></mat-row>
+  </mat-table>
+</div>
+
+
+<ng-template #tpl let-element>
+  <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
+    <div class="row">
+      <div class="col-sm-6">
+        <p class="font-weight-bold">Offensive Score:</p>
+        <p>goals: <span class="font-weight-bold">{{element.goalsSum | number}}</span> &nbsp;&nbsp;&nbsp; ownGoals: <span
+          class="font-weight-bold">{{element.goalsOwnSum | number}}</span></p>
+        <p>avgPotentialGoals: <span class="font-weight-bold">{{element.goalsAllAvg | number}}</span></p>
+        <p>offensiveScoreRaw: <span class="font-weight-bold">{{element.scoreOffensive | number}}</span></p>
+        <p>offensiveScoreNormalized: <span class="font-weight-bold">{{element.scoreOffensiveNormalized | number}}</span>
+        </p>
+      </div>
+      <div class="col-sm-6">
+        <p class="font-weight-bold">Defensive Score:</p>
+        <p>timeInGoal: <span class="font-weight-bold">{{element.timeInGoalMillisSum}}ms = {{convertMillisToTime(element.timeInGoalMillisSum)}}</span>
+        </p>
+        <p>avgPotentialTimeInGoal: <span class="font-weight-bold">{{element.timeInGoalMillisAvg}}ms = {{convertMillisToTime(element.timeInGoalMillisAvg)}}</span>
+        </p>
+        <p>defensiveScoreRaw: <span class="font-weight-bold">{{element.scoreDefensive | number}}</span></p>
+        <p>defensiveScoreNormalized: <span class="font-weight-bold">{{element.scoreDefensiveNormalized | number}}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<h2>Calculations</h2>
+
+<mat-expansion-panel style="margin-bottom: 1em">
+  <mat-expansion-panel-header>
+    <mat-panel-description>
+      Equations used to calculate the scores
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div class="row">
+    <div class="col-12">
+      <p class="font-weight-bold">Offensive Score:</p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <p>
+        <ng-katex
+          equation="avgPotentialGoals=\displaystyle\sum_{matchesWherePersonPlayed} \dfrac{(maxGoals=10)}{nrPersonsInTeam}"></ng-katex>
+      </p>
+      <p>
+        <ng-katex
+          equation="offensiveScoreRaw=\dfrac{goals-ownGoals}{avgPotentialGoals}"></ng-katex>
+      </p>
+      <p>
+        <ng-katex
+          equation="offensiveScoreNormalized=\dfrac{offensiveScoreRaw}{\dfrac{\displaystyle\sum_{allPersons} offensiveScoreRaw}{nrPersons}}"></ng-katex>
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p class="font-weight-bold">Defensive Score:</p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <p>
+        <ng-katex
+          equation="avgPotentialTimeInGoal=\displaystyle\sum_{matchesWherePersonPlayed} \dfrac{matchDuration}{nrPersonsInTeam}"></ng-katex>
+      </p>
+      <p>
+        <ng-katex
+          equation="defensiveScoreRaw=\dfrac{timeInGoal}{avgPotentialTimeInGoal}"></ng-katex>
+      </p>
+      <p>
+        <ng-katex
+          equation="defensiveScoreNormalized=\dfrac{defensiveScoreRaw}{\dfrac{\displaystyle\sum_{allPersons} defensiveScoreRaw}{nrPersons}}"></ng-katex>
+      </p>
+    </div>
+  </div>
+
+</mat-expansion-panel>

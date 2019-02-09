@@ -1,0 +1,120 @@
+<h1>Match Registration</h1>
+
+<h3>1. Register people who want to play</h3>
+<div class="row">
+  <div class=" col-12">
+    <mat-form-field *ngIf="registration">
+      <input matInput placeholder="Registration name" [(ngModel)]="registration.name" (change)="updateName()">
+    </mat-form-field>
+    <mat-slide-toggle (change)="updateRegistrationAll($event)" [(ngModel)]="allSelected" style="float: right">
+      <span *ngIf="allSelected">Unselect all</span>
+      <span *ngIf="!allSelected">Select all</span>
+    </mat-slide-toggle>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="col-6 col-md-3 col-lg-2 player" *ngFor="let person of persons">
+      <mat-card>
+        <mat-card-content>
+          <p>
+            <span>{{person.name}}</span>
+            <mat-slide-toggle (change)="updateRegistration($event, person)" [(ngModel)]="person.registered"
+                              style="float: right">
+            </mat-slide-toggle>
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<h3>2. Choose a method to generate the teams</h3>
+<mat-expansion-panel style="margin-bottom: 1em">
+  <mat-expansion-panel-header>
+    <mat-panel-description>
+      How the teams are created
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <p>Each method starts selecting the players with these common steps:</p>
+  <ol>
+    <li>Over the period of the last {{proposalCalculationMonths}} months, compute "active score" as a weighted sum of nr. of all matches played by a person, where the weight is decreasing with time.
+      A weight of a match is 1/(days since today). A match on the same day has weight 2.
+    </li>
+    <li>Order players ascending by the "active score".
+    </li>
+    <li>Take first up to 8 players.</li>
+  </ol>
+  <p>The rest of the steps is method-dependent:</p>
+  <h3>Random</h3>
+  <ol>
+    <li>Randomize positions of the players in the list.</li>
+    <li>Split players into two teams.</li>
+  </ol>
+  <h3>Balanced Curated</h3>
+  <ol>
+    <li>Over the period of the last {{proposalCalculationMonths}} months, order the players descending by the normalized score (offensive + defensive).</li>
+    <li>Split the players into teams: team A=[1,4,5,8] and team B=[2,3,6,7] (the numbers indicate position in the sorted
+      list).
+    </li>
+    <li>In the teams, set the best defensive player as the goalkeeper and the best offensive player as the forward</li>
+    <li>Randomly assign the blue/red color to the teams.</li>
+  </ol>
+  <h3>Balanced Randomized</h3>
+  <ol>
+    <li>Over the period of the last {{proposalCalculationMonths}} months, order the players descending by the normalized score (offensive + defensive).</li>
+    <li>Create pairs of players: (1,2), (3,4), (5,6) and (7,8) (numbers indicate position in the sorted list).</li>
+    <li>From each pair, assign randomly one player into team A, the other player into team B.</li>
+    <li>Randomize the players position in each team.</li>
+    <li>Randomly assign the blue/red color to the teams.</li>
+  </ol>
+</mat-expansion-panel>
+
+<div class="row">
+  <div class="col-12">
+    <button mat-raised-button color="primary" [disabled]="disableGenerateButton()" (click)="generateMatch('RANDOM')"
+            class="generate">Random
+    </button>
+    <button mat-raised-button color="primary" [disabled]="disableGenerateButton()" (click)="generateMatch('BALANCED')"
+            class="generate">Balanced Curated
+    </button>
+    <button mat-raised-button color="primary" [disabled]="disableGenerateButton()"
+            (click)="generateMatch('BALANCED_RANDOMIZED')"
+            class="generate font-weight-bold">Balanced Randomized
+    </button>
+  </div>
+</div>
+
+<div [hidden]="!matchCreationDto">
+  <h3>3. Set-up accordingly
+    <button mat-stroked-button color="primary" (click)="edit=!edit" style="float: right">Edit</button>
+  </h3>
+  <div [hidden]="edit">
+    <app-match-view *ngIf="matchCreationDto" viewOnly="true"
+                    [personsBlue]="personsBlue" [personsRed]="personsRed"></app-match-view>
+    <div *ngIf="personsIdle.length > 0">
+      <div class="row">
+        <div class="col-12">
+          <p>Idle persons:</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="col-6 col-md-2 player" *ngFor="let person of personsIdle">
+            <mat-card>
+              <mat-card-content><p>{{person.name}}</p></mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <button mat-raised-button color="accent" (click)="createMatch()" class="create-match">Create
+          Match
+        </button>
+      </div>
+    </div>
+  </div>
+  <app-create-match [hidden]="!edit" [matchCreationDto]="matchCreationDto"></app-create-match>
+</div>
