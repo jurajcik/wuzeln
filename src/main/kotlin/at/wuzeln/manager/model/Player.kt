@@ -1,6 +1,7 @@
 package at.wuzeln.manager.model
 
 import at.wuzeln.manager.model.enums.Position
+import at.wuzeln.manager.model.stat.PlayerStats
 import javax.persistence.*
 
 @Entity
@@ -31,6 +32,9 @@ data class Player(
 
     @ManyToOne
     lateinit var playerRight: Player
+
+    @OneToOne(mappedBy = "player", orphanRemoval = true)
+    lateinit var stats: PlayerStats
 
     @OneToMany(mappedBy = "player", cascade = [CascadeType.ALL], orphanRemoval = true)
     val goals: MutableList<Goal> = ArrayList()

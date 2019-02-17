@@ -12,7 +12,8 @@ open class AbstractServiceUnitTest {
     protected var matchRepository: MatchRepository = mock()
     protected var registrationRepository: RegistrationRepository = mock()
     protected var teamRepository: TeamRepository = mock()
+    protected val playerStatsRepository: PlayerStatsRepository = mock()
 
-    protected var NOW = LocalDateTime.now();
+    protected var NOW = LocalDateTime.now()
 
 }

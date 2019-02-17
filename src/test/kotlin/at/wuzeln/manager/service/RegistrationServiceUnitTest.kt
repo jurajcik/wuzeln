@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 class RegistrationServiceUnitTest : AbstractServiceUnitTest() {
 
-    var calculationService= CalculationService(goalRepository, personRepository, teamRepository, matchRepository)
+    var calculationService= CalculationService(goalRepository, personRepository, teamRepository, matchRepository, playerStatsRepository)
     var cut: RegistrationService = RegistrationService(personRepository, registrationRepository, matchRepository, calculationService,
             1, 1, 1)
 

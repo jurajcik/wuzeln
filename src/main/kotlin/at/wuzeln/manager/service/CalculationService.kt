@@ -1,12 +1,10 @@
 package at.wuzeln.manager.service
 
-import at.wuzeln.manager.dao.GoalRepository
-import at.wuzeln.manager.dao.MatchRepository
-import at.wuzeln.manager.dao.PersonRepository
-import at.wuzeln.manager.dao.TeamRepository
+import at.wuzeln.manager.dao.*
 import at.wuzeln.manager.dto.IdleScoreDto
 import at.wuzeln.manager.dto.PersonalScoreDto
 import at.wuzeln.manager.model.Player
+import at.wuzeln.manager.model.stat.PlayerStats
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -18,11 +16,12 @@ class CalculationService(
         private val goalRepository: GoalRepository,
         private val personRepository: PersonRepository,
         private val teamRepository: TeamRepository,
-        private val matchRepository: MatchRepository
+        private val matchRepository: MatchRepository,
+        private val playerStatsRepository: PlayerStatsRepository
 ) {
 
     companion object {
-        val MAX_GOALS: Double = 10.0
+        const val MAX_GOALS: Double = 10.0
     }
 
     private val log = KotlinLogging.logger {}
@@ -53,11 +52,11 @@ class CalculationService(
     }
 
     @Transactional
-    fun calculatePersonalScore(player: Player): PersonalScoreDto {
+    fun calculatePersonalScore(player: Player): PlayerStats {
 
         val match = player.team.match;
 
-        val goalsAllAvg =   MAX_GOALS /  player.team.players.size
+        val goalsAllAvg = MAX_GOALS / player.team.players.size
 
         val goalsSum = player.goals.filter { !it.own }.size
         val goalsOwnSum = player.goals.filter { it.own }.size
@@ -75,9 +74,9 @@ class CalculationService(
             scoreDefensive = player.getMilisicondsInGoal() / (timeInGoalMillisAvg.toDouble())
         }
 
-        val personalScore = PersonalScoreDto(
-                player.person.id,
-                1,
+        val personalScore = PlayerStats(
+                0,
+                player,
                 goalsSum,
                 goalsOwnSum,
                 goalsAllAvg,
@@ -87,7 +86,25 @@ class CalculationService(
                 scoreDefensive)
 
         log.info("calculatePersonalScore(player=$player): $personalScore")
-        return personalScore;
+        return personalScore
+    }
+
+    @Transactional
+    fun calculatePersonalScore_new(personId: Long, startDate: LocalDateTime, endDate: LocalDateTime): PersonalScoreDto {
+
+        val statsList = playerStatsRepository.findByPersonIdAndRange(personId, startDate, endDate)
+        val stats = statsList[0]
+
+        return PersonalScoreDto(
+                personId,
+                stats[0] as Int,
+                stats[1] as Int,
+                stats[2] as Int,
+                stats[3] as Double,
+                stats[4] as Int,
+                stats[5] as Int,
+                stats[6] as Double,
+                stats[7] as Double)
     }
 
     @Transactional
@@ -152,7 +169,6 @@ class CalculationService(
 
         return personScores
     }
-
 
 
 }

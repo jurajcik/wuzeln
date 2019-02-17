@@ -13,6 +13,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.util.*
@@ -20,14 +21,15 @@ import javax.persistence.EntityManagerFactory
 import javax.sql.DataSource
 
 @Configuration
-@EnableTransactionManagement
 @PropertySource(value = [
     "classpath:application.properties",
     "classpath:application-env.properties",
     "classpath:application-private.properties"
 ])
-@ComponentScan(at.wuzeln.manager.config.AppConfig.Companion.BASE_PACKAGE)
-@EnableJpaRepositories(basePackages = ["${at.wuzeln.manager.config.AppConfig.Companion.BASE_PACKAGE}.dao"])
+@ComponentScan(at.wuzeln.manager.config.AppConfig.BASE_PACKAGE)
+@EnableJpaRepositories(basePackages = ["${at.wuzeln.manager.config.AppConfig.BASE_PACKAGE}.dao"])
+// @EnableScheduling
+@EnableTransactionManagement
 class AppConfig {
 
     companion object {
