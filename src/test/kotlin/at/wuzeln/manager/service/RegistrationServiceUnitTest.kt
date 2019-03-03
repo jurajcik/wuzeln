@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 class RegistrationServiceUnitTest : AbstractServiceUnitTest() {
 
-    var calculationService= CalculationService(goalRepository, personRepository, teamRepository, matchRepository)
+    var calculationService= CalculationService(personRepository, matchRepository, playerStatsRepository, MAX_GOALS_IN_MATCH.toDouble(), MAX_PLAYERS_IN_TEAM.toDouble())
     var cut: RegistrationService = RegistrationService(personRepository, registrationRepository, matchRepository, calculationService,
             1, 1, 1)
 
@@ -20,7 +20,7 @@ class RegistrationServiceUnitTest : AbstractServiceUnitTest() {
 
     @BeforeEach
     fun setup() {
-        persons = listOf<Person>(
+        persons = listOf(
                 Person(1, UserAccount(1, ""), ""),
                 Person(2, UserAccount(2, ""), ""),
                 Person(3, UserAccount(3, ""), ""))

@@ -8,9 +8,7 @@ data class PersonalScoreDto(
         val matchesPlayed: Int,
         val goalsSum: Int,
         val goalsOwnSum: Int,
-        val goalsAllAvg: Double,
         val timeInGoalMillisSum: Int,
-        val timeInGoalMillisAvg: Int,
         val scoreOffensive: Double,
         val scoreDefensive: Double
         ) {

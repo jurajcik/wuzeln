@@ -1,49 +1,61 @@
 package at.wuzeln.manager.service
 
-import at.wuzeln.manager.dao.GoalRepository
-import at.wuzeln.manager.dao.MatchRepository
-import at.wuzeln.manager.dao.PersonRepository
-import at.wuzeln.manager.dao.TeamRepository
+import at.wuzeln.manager.dao.*
 import at.wuzeln.manager.dto.IdleScoreDto
 import at.wuzeln.manager.dto.PersonalScoreDto
 import at.wuzeln.manager.model.Player
+import at.wuzeln.manager.model.stat.PlayerStats
 import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import javax.annotation.PostConstruct
 import javax.transaction.Transactional
 
 @Service
 class CalculationService(
-        private val goalRepository: GoalRepository,
         private val personRepository: PersonRepository,
-        private val teamRepository: TeamRepository,
-        private val matchRepository: MatchRepository
+        private val matchRepository: MatchRepository,
+        private val playerStatsRepository: PlayerStatsRepository,
+        @Value("\${match.goals.max}")
+        private val maxGoalsInMatch: Double,
+        @Value("\${match.players.team.max}")
+        private val maxPlayersInTeam: Double
+
 ) {
 
-    companion object {
-        val MAX_GOALS: Double = 10.0
+    var SCORE_OFFENSIVE_MIN: Double = 0.0
+    var SCORE_OFFENSIVE_MAX: Double = 0.0
+    var SCORE_DEFENSIVE_MIN: Double = 0.0
+    var SCORE_DEFENSIVE_MAX: Double = 0.0
+
+    @PostConstruct
+    fun setup() {
+        SCORE_OFFENSIVE_MIN = (0 - maxGoalsInMatch) / (maxGoalsInMatch / maxPlayersInTeam)
+        SCORE_OFFENSIVE_MAX = (maxGoalsInMatch - 0) / (maxGoalsInMatch / maxPlayersInTeam)
+        SCORE_DEFENSIVE_MIN = 0.0
+        SCORE_DEFENSIVE_MAX = 1 / (1 / maxPlayersInTeam)
     }
 
     private val log = KotlinLogging.logger {}
 
 
     @Transactional
-    fun calculatePersonalScoreNormalized(personIds: List<Long>, startDate: LocalDateTime, endDate: LocalDateTime): List<PersonalScoreDto> {
+    fun getPersonalScoreNormalized(personIds: List<Long>, startDate: LocalDateTime, endDate: LocalDateTime): List<PersonalScoreDto> {
 
         val persons = personRepository.findAllById(personIds)
-        val scores = persons.map { calculatePersonalScore(it.id, startDate, endDate) }
+        val scores = persons.map { getPersonalScore(it.id, startDate, endDate) }
         normalizeScores(scores)
         return scores
     }
 
     @Transactional
-    fun normalizeScores(scores: List<PersonalScoreDto>) {
+    protected fun normalizeScores(scores: List<PersonalScoreDto>) {
 
         val count = scores.size
         val avgOffensive = scores.sumByDouble { it.scoreOffensive } / count
         val avgDefensive = scores.sumByDouble { it.scoreDefensive } / count
-
 
         scores.forEach {
             it.scoreOffensiveNormalized = if (avgOffensive != 0.0) it.scoreOffensive / avgOffensive else 0.0
@@ -53,11 +65,44 @@ class CalculationService(
     }
 
     @Transactional
-    fun calculatePersonalScore(player: Player): PersonalScoreDto {
+    fun getPersonalScore(personId: Long, startDate: LocalDateTime, endDate: LocalDateTime): PersonalScoreDto {
 
-        val match = player.team.match;
+        val multipleStats = playerStatsRepository.findByPersonIdAndRange(personId, startDate, endDate)
+        val stats = multipleStats[0]
+        val matchesPlayed = (stats[0] as Long).toInt()
 
-        val goalsAllAvg =   MAX_GOALS /  player.team.players.size
+        return if (matchesPlayed > 0) {
+            PersonalScoreDto(
+                    personId,
+                    matchesPlayed,
+                    (stats[1] as Long).toInt(),
+                    (stats[2] as Long).toInt(),
+                    (stats[3] as Long).toInt(),
+                    round(stats[4] as Double / matchesPlayed),
+                    round(stats[5] as Double / matchesPlayed)
+            )
+        } else {
+            PersonalScoreDto(personId, matchesPlayed, 0, 0, 0, 0.0, 0.0)
+        }
+    }
+
+    @Transactional
+    fun calculatePersonalScore(players: Iterable<Player>) {
+        val stats = ArrayList<PlayerStats>()
+
+        for (one in players) {
+            stats.add(calculatePersonalScore(one))
+        }
+
+        playerStatsRepository.saveAll(stats)
+    }
+
+
+    protected fun calculatePersonalScore(player: Player): PlayerStats {
+
+        val match = player.team.match
+
+        val goalsAllAvg = maxGoalsInMatch / player.team.players.size
 
         val goalsSum = player.goals.filter { !it.own }.size
         val goalsOwnSum = player.goals.filter { it.own }.size
@@ -72,62 +117,34 @@ class CalculationService(
         var scoreDefensive = 0.0
 
         if (timeInGoalMillisAvg != 0) {
+            timeInGoalMillisSum = player.getMilisicondsInGoal().toInt()
             scoreDefensive = player.getMilisicondsInGoal() / (timeInGoalMillisAvg.toDouble())
         }
 
-        val personalScore = PersonalScoreDto(
-                player.person.id,
-                1,
+        val scoreOffensiveNormalized = round(normalizeByRange(scoreOffensive, SCORE_OFFENSIVE_MIN, SCORE_OFFENSIVE_MAX))
+        val scoreDefensiveNormalized = round(normalizeByRange(scoreDefensive, SCORE_DEFENSIVE_MIN, SCORE_DEFENSIVE_MAX))
+
+        val personalScore = PlayerStats(
+                0,
+                player,
                 goalsSum,
                 goalsOwnSum,
-                goalsAllAvg,
                 timeInGoalMillisSum,
-                timeInGoalMillisAvg,
                 scoreOffensive,
-                scoreDefensive)
+                scoreDefensive,
+                scoreOffensiveNormalized,
+                scoreDefensiveNormalized)
 
         log.info("calculatePersonalScore(player=$player): $personalScore")
-        return personalScore;
+        return personalScore
     }
 
-    @Transactional
-    fun calculatePersonalScore(personId: Long, startDate: LocalDateTime, endDate: LocalDateTime): PersonalScoreDto {
+    private fun round(number: Double): Double {
+        return Math.round(number * 100000.0) / 100000.0
+    }
 
-        val person = personRepository.findById(personId).orElseThrow { WuzelnException("No person with id $personId exists") }
-        val teams = teamRepository.findByPersonInRange(personId, startDate, endDate)
-
-        val goalsAllAvg = teams.sumByDouble { MAX_GOALS / it.players.size }
-
-        val goalsSum = goalRepository.countGoalsByPersonInRange(personId, startDate, endDate)
-        val goalsOwnSum = goalRepository.countGoalsOwnByPersonInRange(personId, startDate, endDate)
-        var scoreOffensive = 0.0
-
-        if (goalsAllAvg != 0.0) {
-            scoreOffensive = (goalsSum - goalsOwnSum) / goalsAllAvg
-        }
-
-        val timeInGoalMillisAvg = teams.sumBy { (it.match.startDate?.until(it.match.endDate, ChronoUnit.MILLIS) as Long).toInt() / (it.players.size) }
-        var timeInGoalMillisSum = 0
-        var scoreDefensive = 0.0
-
-        if (timeInGoalMillisAvg != 0) {
-            timeInGoalMillisSum = personRepository.sumMilisecondsInGoal(personId, startDate, endDate)
-            scoreDefensive = timeInGoalMillisSum / (timeInGoalMillisAvg.toDouble())
-        }
-
-        val personalScore = PersonalScoreDto(
-                person.id,
-                teams.size,
-                goalsSum,
-                goalsOwnSum,
-                goalsAllAvg,
-                timeInGoalMillisSum,
-                timeInGoalMillisAvg,
-                scoreOffensive,
-                scoreDefensive)
-
-        log.info("calculatePersonalScore(personId=$personId, startDate=$startDate, endDate=$endDate): $personalScore")
-        return personalScore;
+    private fun normalizeByRange(x: Double, min: Double, max: Double): Double {
+        return (x - min) / (max - min)
     }
 
     @Transactional
@@ -152,7 +169,6 @@ class CalculationService(
 
         return personScores
     }
-
 
 
 }

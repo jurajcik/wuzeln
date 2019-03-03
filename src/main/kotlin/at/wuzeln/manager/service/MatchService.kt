@@ -25,6 +25,7 @@ class MatchService(
         private val playerRepository: PlayerRepository,
         private val matchRepository: MatchRepository,
         private val registrationService: RegistrationService,
+        private val calculationService: CalculationService,
         @Value("\${match.goals.max}")
         private val maxGoalsInMatch: Int
 ) {
@@ -114,6 +115,8 @@ class MatchService(
             val otherGoalie = getGoalie(winningTeam)
             otherGoalie.addMilisecondsInGoal(milisecondsInGoal(otherGoalie, goalDate) as Long)
             playerRepository.save(otherGoalie)
+
+            calculationService.calculatePersonalScore(match.teamBlue.players.union(match.teamRed.players))
         }
     }
 
