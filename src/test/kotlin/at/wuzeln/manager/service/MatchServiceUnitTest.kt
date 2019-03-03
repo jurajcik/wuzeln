@@ -16,7 +16,7 @@ class MatchServiceUnitTest : AbstractServiceUnitTest() {
 
     var registrationService: RegistrationService = mock()
     var cut: MatchService = MatchService(
-            goalRepository, personRepository, playerRepository, matchRepository, registrationService, 10)
+            goalRepository, personRepository, playerRepository, matchRepository, registrationService,  mock(),10)
 
     @BeforeEach
     fun setup() {

@@ -1,10 +1,10 @@
 package at.wuzeln.manager.model.stat
 
 import at.wuzeln.manager.model.Player
-import at.wuzeln.manager.model.enums.Position
 import javax.persistence.*
 
-@Entity(name = "STATS_PLAYER")
+@Entity
+@Table(name = "STATS_PLAYER")
 class PlayerStats(
 
         @Id
@@ -18,18 +18,18 @@ class PlayerStats(
 
         val goalsOwnSum: Int,
 
-        val goalsAllAvg: Double,
-
         val timeInGoalMillisSum: Int,
-
-        val timeInGoalMillisAvg: Int,
 
         val scoreOffensive: Double,
 
-        val scoreDefensive: Double
+        val scoreDefensive: Double,
+
+        val scoreOffensiveNormalizedRange: Double,
+
+        val scoreDefensiveNormalizedRange: Double
 ) {
 
     override fun toString(): String {
-        return "PlayerStats(id=$id, player=$player, goalsSum=$goalsSum, goalsOwnSum=$goalsOwnSum, goalsAllAvg=$goalsAllAvg, timeInGoalMillisSum=$timeInGoalMillisSum, timeInGoalMillisAvg=$timeInGoalMillisAvg, scoreOffensive=$scoreOffensive, scoreDefensive=$scoreDefensive)"
+        return "PlayerStats(id=$id, player=$player, goalsSum=$goalsSum, goalsOwnSum=$goalsOwnSum, timeInGoalMillisSum=$timeInGoalMillisSum, scoreOffensive=$scoreOffensive, scoreDefensive=$scoreDefensive, scoreOffensiveNormalizedRange=$scoreOffensiveNormalizedRange, scoreDefensiveNormalizedRange=$scoreDefensiveNormalizedRange)"
     }
 }

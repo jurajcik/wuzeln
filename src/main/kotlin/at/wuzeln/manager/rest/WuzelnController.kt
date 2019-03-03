@@ -46,7 +46,7 @@ class WuzelnController(
     ): List<PersonalScoreDto> {
         // TODO SEC: check all personIds in caller groups
 
-        return calculationService.calculatePersonalScoreNormalized(personIds, at.wuzeln.manager.Utils.longToLocalDateTime(from), at.wuzeln.manager.Utils.longToLocalDateTime(to))
+        return calculationService.getPersonalScoreNormalized(personIds, at.wuzeln.manager.Utils.longToLocalDateTime(from), at.wuzeln.manager.Utils.longToLocalDateTime(to))
     }
 
     @GET

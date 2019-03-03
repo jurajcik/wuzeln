@@ -182,7 +182,7 @@ class RegistrationService(
     private fun calculateScoresForProposal(playing: MutableList<Person>): List<PersonalScoreDto> {
         val endDate = LocalDateTime.now()
         val startDate = endDate.minusMonths(proposalCalculationMonths)
-        return calculationService.calculatePersonalScoreNormalized(playing.map { it.id }, startDate, endDate)
+        return calculationService.getPersonalScoreNormalized(playing.map { it.id }, startDate, endDate)
     }
 
     fun generateBalancedTeams(personalScores: List<PersonalScoreDto>): List<List<Long>> {

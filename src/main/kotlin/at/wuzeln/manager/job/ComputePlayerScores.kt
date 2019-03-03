@@ -16,8 +16,7 @@ import javax.transaction.Transactional
 @Component
 class ComputePlayerScores(
         private val playerRepository: PlayerRepository,
-        private val calculationService: CalculationService,
-        private val playerStatsRepository: PlayerStatsRepository
+        private val calculationService: CalculationService
 ) {
 
     companion object {
@@ -27,33 +26,22 @@ class ComputePlayerScores(
     private val log = KotlinLogging.logger {}
 
     @EventListener
-    fun onApplicationEvent( event: ContextRefreshedEvent) {
+    @Transactional
+    fun onApplicationEvent(event: ContextRefreshedEvent) {
 
-        log.info{"started ComputePlayerScores"}
+        log.info { "started ComputePlayerScores" }
 
         var playersSlice: Slice<Player>
         var count = 0
 
         do {
             playersSlice = playerRepository.findAllByStatsIsNullAndTeam_match_endDateIsNotNull(PageRequest.of(0, PAGE_SIZE))
-            processPage(playersSlice.content)
+            calculationService.calculatePersonalScore(playersSlice.content)
             count += playersSlice.content.size
 
         } while (!playersSlice.isLast)
 
-        log.info{"finished ComputePlayerScores. Processed $count players"}
-    }
-
-
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    fun processPage(players: List<Player>) {
-        val stats = ArrayList<PlayerStats>()
-
-        for (one in players) {
-            stats.add(calculationService.calculatePersonalScore(one))
-        }
-
-        playerStatsRepository.saveAll(stats)
+        log.info { "finished ComputePlayerScores. Processed $count players" }
     }
 
 

@@ -24,7 +24,7 @@
 
 
 <div class="mat-elevation-z4" style="margin-bottom: 30px">
-  <mat-table #sort="matSort" matSort [dataSource]="dataSource" matSortActive="name" matSortDirection="asc">
+  <mat-table #sort="matSort" matSort [dataSource]="dataSource" matSortActive="scoreNormalized" matSortDirection="desc">
 
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
@@ -80,16 +80,13 @@
         <p class="font-weight-bold">Offensive Score:</p>
         <p>goals: <span class="font-weight-bold">{{element.goalsSum | number}}</span> &nbsp;&nbsp;&nbsp; ownGoals: <span
           class="font-weight-bold">{{element.goalsOwnSum | number}}</span></p>
-        <p>avgPotentialGoals: <span class="font-weight-bold">{{element.goalsAllAvg | number}}</span></p>
         <p>offensiveScoreRaw: <span class="font-weight-bold">{{element.scoreOffensive | number}}</span></p>
         <p>offensiveScoreNormalized: <span class="font-weight-bold">{{element.scoreOffensiveNormalized | number}}</span>
         </p>
       </div>
       <div class="col-sm-6">
         <p class="font-weight-bold">Defensive Score:</p>
-        <p>timeInGoal: <span class="font-weight-bold">{{element.timeInGoalMillisSum}}ms = {{convertMillisToTime(element.timeInGoalMillisSum)}}</span>
-        </p>
-        <p>avgPotentialTimeInGoal: <span class="font-weight-bold">{{element.timeInGoalMillisAvg}}ms = {{convertMillisToTime(element.timeInGoalMillisAvg)}}</span>
+        <p>timeInGoal: <span class="font-weight-bold">{{convertMillisToTime(element.timeInGoalMillisSum)}}</span>
         </p>
         <p>defensiveScoreRaw: <span class="font-weight-bold">{{element.scoreDefensive | number}}</span></p>
         <p>defensiveScoreNormalized: <span class="font-weight-bold">{{element.scoreDefensiveNormalized | number}}</span>
@@ -107,7 +104,11 @@
       Equations used to calculate the scores
     </mat-panel-description>
   </mat-expansion-panel-header>
-
+  <div class="row">
+    <div class="col-12">
+      <p>Raw scores are computed per match and then averaged.</p>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12">
       <p class="font-weight-bold">Offensive Score:</p>
@@ -117,7 +118,7 @@
     <div class="col-md-8">
       <p>
         <ng-katex
-          equation="avgPotentialGoals=\displaystyle\sum_{matchesWherePersonPlayed} \dfrac{(maxGoals=10)}{nrPersonsInTeam}"></ng-katex>
+          equation="avgPotentialGoals=\displaystyle \dfrac{(maxGoals=10)}{nrPersonsInTeam}"></ng-katex>
       </p>
       <p>
         <ng-katex
@@ -138,7 +139,7 @@
     <div class="col-md-8">
       <p>
         <ng-katex
-          equation="avgPotentialTimeInGoal=\displaystyle\sum_{matchesWherePersonPlayed} \dfrac{matchDuration}{nrPersonsInTeam}"></ng-katex>
+          equation="avgPotentialTimeInGoal=\displaystyle \dfrac{matchDuration}{nrPersonsInTeam}"></ng-katex>
       </p>
       <p>
         <ng-katex
