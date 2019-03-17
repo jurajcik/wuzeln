@@ -11,6 +11,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.security.SecureRandom
 
 class MatchServiceUnitTest : AbstractServiceUnitTest() {
 
@@ -27,7 +28,7 @@ class MatchServiceUnitTest : AbstractServiceUnitTest() {
             val ids: Collection<Long> = invocationOnMock.getArgument(0)
             players
                     .filter { player -> ids.contains(player.id) }
-                    .shuffled()
+                    .shuffled(SecureRandom())
         }
     }
 

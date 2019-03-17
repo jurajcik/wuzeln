@@ -15,6 +15,7 @@ import mu.KotlinLogging
 import org.apache.commons.collections4.ListUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.security.SecureRandom
 import java.time.LocalDateTime
 import java.util.*
 import javax.transaction.Transactional
@@ -172,7 +173,7 @@ class RegistrationService(
 
     fun generateRandomTeams(playing: MutableList<Person>): List<List<Long>> {
 
-        playing.shuffle()
+        playing.shuffle(SecureRandom())
         val halfCount = playing.size / 2
         val teamBlue = playing.subList(0, halfCount).map { it.id }
         val teamRed = playing.subList(halfCount, playing.size).map { it.id }
@@ -216,7 +217,7 @@ class RegistrationService(
         reorderTeam(teamB)
 
         val result = arrayListOf<List<PersonalScoreDto>>(teamA, teamB)
-        result.shuffle()
+        result.shuffle(SecureRandom())
         return result.map { it.map { it.id } }
     }
 
@@ -239,25 +240,25 @@ class RegistrationService(
         val partitions = ListUtils.partition(sortedScores, 2)
 
         for (pair in partitions) {
-            val firstToTeamA = Random().nextBoolean()
+            val firstToTeamA = SecureRandom().nextBoolean()
 
             if (pair.size == 2) {
                 teamA.add(pair[if (firstToTeamA) 0 else 1])
                 teamB.add(pair[if (firstToTeamA) 1 else 0])
-            }else{
-                if(firstToTeamA){
+            } else {
+                if (firstToTeamA) {
                     teamA.add(pair[0])
-                }else{
+                } else {
                     teamB.add(pair[0])
                 }
             }
         }
 
-        teamA.shuffle()
-        teamB.shuffle()
+        teamA.shuffle(SecureRandom())
+        teamB.shuffle(SecureRandom())
 
         val result = arrayListOf<List<PersonalScoreDto>>(teamA, teamB)
-        result.shuffle()
+        result.shuffle(SecureRandom())
 
         log.info("team blue sum=${result[0].sumByDouble { it.scoreNormalized as Double }}, " +
                 "offensive=${result[0].sumByDouble { it.scoreOffensiveNormalized as Double }}, " +
