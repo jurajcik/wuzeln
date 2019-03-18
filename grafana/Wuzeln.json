@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1551739558226,
+  "iteration": 1552868657539,
   "links": [],
   "panels": [
     {
@@ -29,7 +29,7 @@
       },
       "id": 19,
       "panels": [],
-      "title": "Other",
+      "title": "Basics",
       "type": "row"
     },
     {
@@ -212,17 +212,219 @@
       "valueName": "total"
     },
     {
-      "collapsed": false,
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "decimals": null,
+      "fill": 1,
       "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 6
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 1
       },
-      "id": 40,
-      "panels": [],
-      "title": "Goals",
-      "type": "row"
+      "id": 42,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH winner_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null AND\r\n  t.winner = TRUE\r\nGROUP BY pe.nickname\r\n  ), \r\nall_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\nGROUP BY pe.nickname\r\n  )\r\n  \r\nSELECT wc.value / cast(ac.value as float) as value, \r\nac.nickname as metric,\r\nnow() as time\r\nFROM winner_count wc \r\nJOIN all_count ac ON wc.nickname = ac.nickname\r\nORDER BY value DESC\r\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Won Matches",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "current"
+        ]
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "percentunit",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "decimals": null,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "columns": [],
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 13,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 44,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "percentage",
+          "colorMode": "value",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "value",
+          "thresholds": [
+            "40",
+            "60"
+          ],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "/nr/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH winner_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null AND\r\n  t.winner = TRUE\r\nGROUP BY pe.nickname\r\n  ), \r\nall_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\nGROUP BY pe.nickname\r\n  )\r\n  \r\nSELECT \r\nac.nickname as name,\r\n(wc.value / cast(ac.value as float))*100 as value,\r\nac.value as \"nr. of played\",\r\nwc.value as \"nr. of won\"\r\nFROM winner_count wc \r\nJOIN all_count ac ON wc.nickname = ac.nickname\r\nORDER BY value DESC\r\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Won Matches",
+      "transform": "table",
+      "type": "table"
     },
     {
       "aliasColors": {
@@ -243,7 +445,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 7
+        "y": 6
       },
       "id": 10,
       "interval": null,
@@ -295,160 +497,6 @@
     },
     {
       "aliasColors": {
-        "BLUE": "#3f51b5",
-        "RED": "#d32f2f"
-      },
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
-      },
-      "fontSize": "110%",
-      "format": "short",
-      "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 8,
-        "y": 7
-      },
-      "id": 37,
-      "interval": null,
-      "legend": {
-        "percentage": true,
-        "show": true,
-        "sort": "total",
-        "sortDesc": true,
-        "values": true
-      },
-      "legendType": "Right side",
-      "links": [
-        {
-          "type": "dashboard"
-        }
-      ],
-      "maxDataPoints": 3,
-      "nullPointMode": "connected",
-      "pieType": "pie",
-      "strokeWidth": "1",
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT \r\n  kickerPerson.nickname,\r\n  now() as time,\r\n  count(*) as count\r\nFROM wuzeln.goal g\r\n  JOIN wuzeln.player goalie ON g.goalie_id = goalie.id\r\n  JOIN wuzeln.player kicker ON g.player_id = kicker.id\r\n  JOIN wuzeln.person goaliePerson ON goalie.person_id = goaliePerson.id\r\n  JOIN wuzeln.person kickerPerson ON kicker.person_id = kickerPerson.id\r\n  JOIN wuzeln.team t on t.id = kicker.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE m.enddate IS NOT NULL \r\n  AND $__timeFilter(m.createddate)\r\n  AND goaliePerson.nickname IN ( $nickname )\r\nGROUP BY kickerPerson.nickname\r\nORDER BY count",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Nemesis",
-      "type": "grafana-piechart-panel",
-      "valueName": "total"
-    },
-    {
-      "aliasColors": {
-        "BLUE": "#3f51b5",
-        "RED": "#d32f2f"
-      },
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
-      },
-      "fontSize": "110%",
-      "format": "short",
-      "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 16,
-        "y": 7
-      },
-      "id": 36,
-      "interval": null,
-      "legend": {
-        "percentage": true,
-        "show": true,
-        "sort": "total",
-        "sortDesc": true,
-        "values": true
-      },
-      "legendType": "Right side",
-      "links": [
-        {
-          "type": "dashboard"
-        }
-      ],
-      "maxDataPoints": 3,
-      "nullPointMode": "connected",
-      "pieType": "pie",
-      "strokeWidth": "1",
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT \r\n  goaliePerson.nickname,\r\n  now() as time,\r\n  count(*) as count\r\nFROM wuzeln.goal g\r\n  JOIN wuzeln.player goalie ON g.goalie_id = goalie.id\r\n  JOIN wuzeln.player kicker ON g.player_id = kicker.id\r\n  JOIN wuzeln.person goaliePerson ON goalie.person_id = goaliePerson.id\r\n  JOIN wuzeln.person kickerPerson ON kicker.person_id = kickerPerson.id\r\n  JOIN wuzeln.team t on t.id = kicker.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE m.enddate IS NOT NULL \r\n  AND $__timeFilter(m.createddate)\r\n  AND kickerPerson.nickname IN ( $nickname )\r\nGROUP BY goaliePerson.nickname\r\nORDER BY count",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Prey",
-      "type": "grafana-piechart-panel",
-      "valueName": "total"
-    },
-    {
-      "aliasColors": {
         "DEFENDER": "#eab839",
         "FORWARD": "#7eb26c",
         "GOALKEEPER": "#ea843b",
@@ -466,7 +514,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 12
+        "y": 11
       },
       "id": 38,
       "interval": null,
@@ -522,7 +570,452 @@
         "h": 1,
         "w": 24,
         "x": 0,
+        "y": 16
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Offensive & Defensive Scores",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
         "y": 17
+      },
+      "id": 23,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeatDirection": "v",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  avg(sp.scoreoffensive),\n  date_trunc('month', m.createddate) as \"time\",\n  pe.nickname as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN ( $nickname )\nGROUP BY pe.nickname, time\nORDER BY pe.nickname, time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Offensive Score over Time (Grouped by Month)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 24,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeatDirection": "v",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  avg(sp.scoredefensive),\n  date_trunc('month', m.createddate) as \"time\",\n  pe.nickname as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN ( $nickname )\nGROUP BY pe.nickname, time\nORDER BY pe.nickname, time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Defensive Score over Time (Grouped by Month)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "count": "dark-red"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "id": 14,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "show": false,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  sp.scoreoffensive,\n  m.startdate as \"time\"\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n   AND pe.nickname IN ( $nickname )\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Offensive Score Distribution",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "histogram",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "count": "dark-yellow"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "id": 15,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "show": false,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  sp.scoredefensive,\n  m.startdate as \"time\"\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN ( $nickname )",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Defensive Score Distribution",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "histogram",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 36
       },
       "id": 34,
       "panels": [],
@@ -530,7 +1023,9 @@
       "type": "row"
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "count": "green"
+      },
       "bars": true,
       "dashLength": 10,
       "dashes": false,
@@ -539,7 +1034,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 37
       },
       "id": 32,
       "legend": {
@@ -549,7 +1044,7 @@
         "max": true,
         "min": true,
         "rightSide": false,
-        "show": true,
+        "show": false,
         "total": true,
         "values": true
       },
@@ -636,7 +1131,9 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "count": "green"
+      },
       "bars": true,
       "dashLength": 10,
       "dashes": false,
@@ -645,7 +1142,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 37
       },
       "id": 35,
       "legend": {
@@ -654,7 +1151,7 @@
         "current": true,
         "max": true,
         "min": true,
-        "show": true,
+        "show": false,
         "total": true,
         "values": true
       },
@@ -741,7 +1238,9 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "count": "green"
+      },
       "bars": true,
       "dashLength": 10,
       "dashes": false,
@@ -751,7 +1250,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 45
       },
       "id": 4,
       "legend": {
@@ -761,7 +1260,7 @@
         "max": true,
         "min": true,
         "rightSide": false,
-        "show": true,
+        "show": false,
         "total": true,
         "values": true
       },
@@ -864,729 +1363,6 @@
         "align": false,
         "alignLevel": null
       }
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 35
-      },
-      "id": 26,
-      "panels": [],
-      "title": "Scores Multiple Persons",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 36
-      },
-      "id": 23,
-      "legend": {
-        "alignAsTable": false,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "repeatDirection": "v",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  avg(sp.scoreoffensive),\n  date_trunc('month', m.createddate) as \"time\",\n  pe.nickname as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN ( $nickname )\nGROUP BY pe.nickname, time\nORDER BY pe.nickname, time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Offensive Score over Time (Grouped by Month)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 36
-      },
-      "id": 24,
-      "legend": {
-        "alignAsTable": false,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "repeatDirection": "v",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  avg(sp.scoredefensive),\n  date_trunc('month', m.createddate) as \"time\",\n  pe.nickname as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN ( $nickname )\nGROUP BY pe.nickname, time\nORDER BY pe.nickname, time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Defensive Score over Time (Grouped by Month)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 45
-      },
-      "id": 17,
-      "panels": [],
-      "title": "Offensive & Defensive Scores",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 46
-      },
-      "id": 21,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "repeat": null,
-      "repeatDirection": "v",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  avg(sp.scoreoffensive),\n  date_trunc('week', m.createddate) as \"time\",\n   'Offensive' as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN( $nickname )\nGROUP BY time\nORDER BY time",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  avg(sp.scoredefensive),\n  date_trunc('week', m.createddate) as \"time\",\n  'Defensive' as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN( $nickname )\nGROUP BY time\nORDER BY time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Scores over Time (Grouped by Week)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 46
-      },
-      "id": 22,
-      "legend": {
-        "alignAsTable": false,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "repeatDirection": "v",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  avg(sp.scoredefensive),\n  date_trunc('month', m.createddate) as \"time\",\n  'Defensive' as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN( $nickname )\nGROUP BY time\nORDER BY time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  avg(sp.scoreoffensive),\n  date_trunc('month', m.createddate) as \"time\",\n   'Offensive' as metric\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN( $nickname )\nGROUP BY time\nORDER BY time",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Scores over Time (Grouped by Month)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 55
-      },
-      "id": 14,
-      "legend": {
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  sp.scoreoffensive,\n  m.startdate as \"time\"\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n   AND pe.nickname IN ( $nickname )\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Offensive Score Distribution",
-      "tooltip": {
-        "shared": false,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "histogram",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 55
-      },
-      "id": 15,
-      "legend": {
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  sp.scoredefensive,\n  m.startdate as \"time\"\nFROM\n  wuzeln.stats_player sp \n  JOIN wuzeln.player p on sp.player_id = p.id \n  JOIN wuzeln.team t on t.id = p.team_id\n  JOIN wuzeln.match m on m.id = t.match_id\n  JOIN wuzeln.person pe ON p.person_id = pe.id\nWHERE\n  $__timeFilter(m.createddate)\n  AND pe.nickname IN ( $nickname )",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Defensive Score Distribution",
-      "tooltip": {
-        "shared": false,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "histogram",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
     }
   ],
   "refresh": false,
@@ -1610,7 +1386,7 @@
         "name": "nickname",
         "options": [],
         "query": "SELECT p.nickname FROM wuzeln.person p",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
@@ -1647,5 +1423,5 @@
   "timezone": "",
   "title": "Wuzeln",
   "uid": "9bf9qR_mk",
-  "version": 8
+  "version": 12
 }
