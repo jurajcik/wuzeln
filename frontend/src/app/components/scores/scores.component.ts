@@ -8,6 +8,7 @@ import {StatService, TopPlayers} from "../../services/stat.service";
 import {ConfigurationService} from "../../services/configuration.service";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
+import {OAuthService} from "../../services/oauth.service";
 
 @Component({
   selector: 'app-scores',
@@ -44,9 +45,13 @@ export class ScoresComponent implements OnInit {
 
   innerWidth: number;
 
+  grafanaDashboardUrl: String;
+  grafanaDashboardIndividualUrl: String;
+
   constructor(
     private wuzelnService: WuzelnService,
-    private configurationService: ConfigurationService
+    private configurationService: ConfigurationService,
+    private oAuthService: OAuthService
   ) {
   }
 
@@ -62,6 +67,7 @@ export class ScoresComponent implements OnInit {
     Utils.hideColumnsInSmallScreen(this.displayedColumns, this.hideColumns)
 
     this.refresh();
+    this.setGrafanaLinks()
   }
 
   @HostListener('window:resize', ['$event'])
@@ -116,6 +122,15 @@ export class ScoresComponent implements OnInit {
           return map;
         }
       ))
+  }
+
+  setGrafanaLinks() {
+    this.grafanaDashboardUrl = this.configurationService.getConfig().grafanaLinkDashboard;
+
+    this.oAuthService.onUserChange()
+      .subscribe(userAccount => {
+        this.grafanaDashboardIndividualUrl = this.configurationService.getConfig().grafanaLinkDashboardIndividual + userAccount.username;
+      })
   }
 
 }

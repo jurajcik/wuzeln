@@ -17,5 +17,11 @@ data class ConfigurationDto(
         val validationUsernameText: String,
 
         @Value("\${registration.proposal_calculation.months}")
-        val proposalCalculationMonths: Int
+        val proposalCalculationMonths: Int,
+
+        @Value("\${grafana.link.dashboard}")
+        val grafanaLinkDashboard: String,
+
+        @Value("\${grafana.link.dashboard-individual}")
+        val grafanaLinkDashboardIndividual: String
 )
