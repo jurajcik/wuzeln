@@ -28,7 +28,7 @@ import javax.sql.DataSource
 ])
 @ComponentScan(at.wuzeln.manager.config.AppConfig.BASE_PACKAGE)
 @EnableJpaRepositories(basePackages = ["${at.wuzeln.manager.config.AppConfig.BASE_PACKAGE}.dao"])
-// @EnableScheduling
+@EnableScheduling
 @EnableTransactionManagement
 class AppConfig {
 

@@ -2,8 +2,11 @@ package at.wuzeln.manager.service
 
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import at.wuzeln.manager.TestUtil
 import at.wuzeln.manager.dto.MatchCreationDto
-import at.wuzeln.manager.model.*
+import at.wuzeln.manager.model.Match
+import at.wuzeln.manager.model.Player
+import at.wuzeln.manager.model.Team
 import at.wuzeln.manager.model.enums.MatchCreationMethod
 import at.wuzeln.manager.model.enums.Position
 import com.nhaarman.mockito_kotlin.any
@@ -22,7 +25,7 @@ class MatchServiceUnitTest : AbstractServiceUnitTest() {
     @BeforeEach
     fun setup() {
 
-        val players = createAllPeople()
+        val players = TestUtil.createAllPeople()
 
         whenever(personRepository.findAllById(any())).thenAnswer { invocationOnMock ->
             val ids: Collection<Long> = invocationOnMock.getArgument(0)
@@ -68,13 +71,6 @@ class MatchServiceUnitTest : AbstractServiceUnitTest() {
 
 }
 
-fun createAllPeople(): List<Person> {
-    val players = ArrayList<Person>()
-    for (i in 1L..10L) {
-        players.add(Person(i, UserAccount(i, "person $i"), "person $i"))
-    }
-    return players
-}
 
 fun getPlayerOnStartingPosition(team: Team, position: Position): Player {
     return team.players.first { it.startingPosition == position }

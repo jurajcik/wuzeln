@@ -1,8 +1,11 @@
 package at.wuzeln.manager.service
 
 import assertk.assertions.*
+import at.wuzeln.manager.TestUtil
 import at.wuzeln.manager.config.AppConfig
-import at.wuzeln.manager.dao.*
+import at.wuzeln.manager.dao.GoalRepository
+import at.wuzeln.manager.dao.MatchRepository
+import at.wuzeln.manager.dao.PlayerRepository
 import at.wuzeln.manager.dto.MatchCreationDto
 import at.wuzeln.manager.model.enums.MatchCreationMethod
 import mu.KotlinLogging
@@ -10,8 +13,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -30,11 +31,9 @@ open class MatchServiceTest {
     lateinit var cut: MatchService
 
     @Autowired
-    lateinit var userAccountRepository: UserAccountRepository
+    lateinit var testUtil: TestUtil
     @Autowired
     lateinit var playerRepository: PlayerRepository
-    @Autowired
-    lateinit var personRepository: PersonRepository
     @Autowired
     lateinit var matchRepository: MatchRepository
     @Autowired
@@ -46,15 +45,12 @@ open class MatchServiceTest {
 
     @BeforeEach
     fun onSetUp() {
-        val auth = UsernamePasswordAuthenticationToken("someUsername", null)
-        SecurityContextHolder.getContext().authentication = auth
+        TestUtil.mockSecurityContext()
     }
 
     fun setup() {
 
-        var people = createAllPeople()
-        people.forEach { it.userAccount = userAccountRepository.save(it.userAccount) }
-        people = personRepository.saveAll(people)
+        var people = testUtil.savePeopleWithAccounts(TestUtil.createAllPeople())
 
         teamBlue = arrayListOf(people[0].id, people[2].id, people[4].id, people[6].id)
         teamRed = arrayListOf(people[1].id, people[3].id, people[5].id)

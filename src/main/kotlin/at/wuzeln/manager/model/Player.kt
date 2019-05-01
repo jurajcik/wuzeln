@@ -33,7 +33,7 @@ data class Player(
     @ManyToOne
     lateinit var playerRight: Player
 
-    @OneToOne(mappedBy = "player", orphanRemoval = true)
+    @OneToOne(mappedBy = "player", cascade = [CascadeType.ALL], orphanRemoval = true)
     lateinit var stats: PlayerStats
 
     @OneToMany(mappedBy = "player", cascade = [CascadeType.ALL], orphanRemoval = true)
