@@ -34,8 +34,7 @@ class AdministrativeApi(
 
         if (hasRole(SecurityRole.UNKNOWN)) {
             val userAccountId = userAccountService.register(userAccount.username, auth.principal as String)
-            // TODO uncomment when all current user are registered
-            // personService.createPerson(userAccount.username)
+            personService.createPerson(userAccount.username, userAccount.username)
             return userAccountId
         }
 
