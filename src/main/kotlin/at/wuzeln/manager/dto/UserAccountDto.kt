@@ -8,5 +8,6 @@ data class UserAccountDto(
         val googleAccountId: String?,
         val registered: Boolean,
         val admin: Boolean,
+        val active: Boolean,
         val createdDate: Long?
 )

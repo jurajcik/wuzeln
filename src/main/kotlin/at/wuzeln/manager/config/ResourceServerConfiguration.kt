@@ -53,7 +53,7 @@ class ResourceServerConfiguration(
                     .antMatchers("/**" )
         .and()
                 .authorizeRequests()
-                    .antMatchers( HttpMethod.POST, "/services/administration/users").permitAll()
+                    .antMatchers( HttpMethod.POST, "/services/administration/users/current").permitAll()
                     .antMatchers( HttpMethod.GET,  "/services/administration/users/current").permitAll()
 
                     .antMatchers(
@@ -61,6 +61,7 @@ class ResourceServerConfiguration(
                             "/services/matches/**",
                             "/services/registrations/**").hasRole(SecurityRole.REGISTERED_USER.name)
 
+                    .antMatchers( HttpMethod.POST, "/services/administration/users").hasRole(SecurityRole.ADMIN.name)
                     .antMatchers( HttpMethod.GET, "/services/administration/users").hasRole(SecurityRole.ADMIN.name)
                     .antMatchers( HttpMethod.PUT, "/services/administration/users/**").hasRole(SecurityRole.ADMIN.name)
         .and()

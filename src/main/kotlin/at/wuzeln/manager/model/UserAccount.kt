@@ -17,7 +17,7 @@ data class UserAccount(
 ): HasMetadata {
 
     @Column(unique = true)
-    lateinit var googleAccountId: String
+    var googleAccountId: String? = null
 
     @Basic(fetch = FetchType.LAZY)
     @Lob

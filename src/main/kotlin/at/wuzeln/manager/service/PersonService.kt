@@ -4,6 +4,7 @@ import at.wuzeln.manager.dao.PersonRepository
 import at.wuzeln.manager.dao.UserAccountRepository
 import at.wuzeln.manager.dto.PersonDto
 import at.wuzeln.manager.model.Person
+import at.wuzeln.manager.model.enums.SecurityRole
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -33,7 +34,8 @@ class PersonService(
                 .map {
                     PersonDto(
                             it.id,
-                            it.nickname
+                            it.nickname,
+                            it.userAccount.hasRole(SecurityRole.ACTIVE_USER)
                     )
                 }
                 .toList()

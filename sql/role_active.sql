@@ -1,0 +1,5 @@
+INSERT INTO wuzeln.role (ID, NAME)
+VALUES (3, 'ACTIVE_USER');
+
+
+

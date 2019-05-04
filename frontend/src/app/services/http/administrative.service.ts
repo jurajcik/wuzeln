@@ -14,7 +14,7 @@ export class AdministrativeService implements AdministrativeApi {
   }
 
   createUserAccount(arg0: UserAccountCreationDto): Observable<number> {
-    return this.http.post<number>(Constants.PATH_ADMINISTRATION + 'users', arg0);
+    return this.http.post<number>(Constants.PATH_ADMINISTRATION + 'users/current', arg0);
   }
 
   getUserAccount(): Observable<UserAccountDto> {
@@ -27,6 +27,10 @@ export class AdministrativeService implements AdministrativeApi {
 
   updateUserAccount(username: string, arg1: UserAccountUpdateAdminDto, queryParams?: { username?: string }): Observable<void> {
     return this.http.put<void>(Constants.PATH_ADMINISTRATION + 'users/' + username , arg1);
+  }
+
+  createUserAccountForOtherUser(arg0: UserAccountCreationDto): Observable<number> {
+    return this.http.post<number>(Constants.PATH_ADMINISTRATION + 'users', arg0);
   }
 
 

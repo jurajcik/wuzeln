@@ -4,6 +4,7 @@ enum class SecurityRole {
 
     UNKNOWN,
     REGISTERED_USER,
+    ACTIVE_USER,
     ADMIN;
 
     companion object {

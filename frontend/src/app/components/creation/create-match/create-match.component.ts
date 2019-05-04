@@ -44,13 +44,15 @@ export class CreateMatchComponent implements OnInit {
     this.wuzelnService.findAllPersons()
       .subscribe(persons => {
 
+        let personsPool = persons.filter( one => one.active);
+
         if (matchCreationDto) {
           this.matchCreationDto = matchCreationDto;
           this.name = matchCreationDto.name;
-          this.setUiFromRegistration(persons as PersonDtoView[]);
+          this.setUiFromRegistration(personsPool as PersonDtoView[]);
 
         } else {
-          this.addPersonsToPool(persons);
+          this.addPersonsToPool(personsPool);
         }
       });
   }

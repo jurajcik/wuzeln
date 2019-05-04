@@ -27,13 +27,13 @@ class AdministrativeApi(
     private val log = KotlinLogging.logger {}
 
     @POST
-    @Path("/administration/users")
+    @Path("/administration/users/current")
     fun createUserAccount(userAccount: UserAccountCreationDto): Long {
 
         var auth = SecurityContextHolder.getContext().authentication
 
         if (hasRole(SecurityRole.UNKNOWN)) {
-            val userAccountId = userAccountService.register(userAccount.username, auth.principal as String)
+            val userAccountId = userAccountService.register(userAccount.username, auth.principal as String, false)
             personService.createPerson(userAccount.username, userAccount.username)
             return userAccountId
         }
@@ -49,12 +49,20 @@ class AdministrativeApi(
         var auth = SecurityContextHolder.getContext().authentication
 
         if (hasRole(SecurityRole.UNKNOWN)) {
-            return UserAccountDto(null, null, false, false, null)
+            return UserAccountDto(null, null, false, false, false, null)
         } else {
             return userAccountService.getUserAccount(auth.name)
         }
     }
 
+    @POST
+    @Path("/administration/users")
+    fun createUserAccountForOtherUser(userAccount: UserAccountCreationDto): Long {
+
+        val userAccountId = userAccountService.register(userAccount.username, null, true)
+        personService.createPerson(userAccount.username, userAccount.username)
+        return userAccountId
+    }
 
     @GET
     @Path("/administration/users")

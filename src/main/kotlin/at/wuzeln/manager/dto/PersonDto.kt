@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonClassDescription
 @JsonClassDescription
 data class PersonDto(
         val id: Long,
-        val name: String
+        val name: String,
         // TODO add username
         //val username: String
+        val active: Boolean
 )

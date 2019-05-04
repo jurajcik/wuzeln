@@ -39,12 +39,12 @@ open class DaoTest {
         val name = "test person"
         val person = Person(0, UserAccount(0,   name), name)
 
-        userAccountRepository.save(person.userAccount);
+        userAccountRepository.save(person.userAccount!!);
         personRepository.save(person)
 
         val result = personRepository.findAll()
         assertk.assert(result).hasSize(1)
-        assertk.assert(result[0].userAccount.username).isEqualTo(name)
+        assertk.assert(result[0].userAccount!!.username).isEqualTo(name)
 
     }
 

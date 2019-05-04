@@ -35,7 +35,7 @@ class UserAccountService(
     }
 
     @Transactional
-    fun register(username: String, googleAccountId: String): Long {
+    fun register(username: String, googleAccountId: String?, active: Boolean): Long {
 
         if (username == null || !username.matches(Regex(configuration.validationUsernamePattern))) {
             throw WuzelnException(configuration.validationUsernameText);
@@ -47,6 +47,7 @@ class UserAccountService(
 
         val userAccount = UserAccount(0, username)
         userAccount.googleAccountId = googleAccountId
+        manageRole(userAccount, SecurityRole.ACTIVE_USER, active)
 
         return userAccountRepository.save(userAccount).id
     }
@@ -66,22 +67,25 @@ class UserAccountService(
         val userAccount = userAccountRepository.findByUsername(username)
                 ?: throw WuzelnException("There is no account for the username $username")
 
-        val roleRegistered = roleRepository.findByName(SecurityRole.REGISTERED_USER);
-        val roleAdmin = roleRepository.findByName(SecurityRole.ADMIN);
-
-        if (userAccountDto.registered) {
-            userAccount.roles.add(roleRegistered)
-        } else {
-            userAccount.roles.remove(roleRegistered)
-        }
-
-        if (userAccountDto.admin) {
-            userAccount.roles.add(roleAdmin)
-        } else {
-            userAccount.roles.remove(roleAdmin)
-        }
+        manageRole(userAccount, SecurityRole.ACTIVE_USER, userAccountDto.active)
+        manageRole(userAccount, SecurityRole.ADMIN, userAccountDto.admin)
+        manageRole(userAccount, SecurityRole.REGISTERED_USER, userAccountDto.registered)
 
         userAccountRepository.save(userAccount)
+    }
+
+    private fun manageRole(
+            userAccount: UserAccount,
+            role: SecurityRole,
+            newState: Boolean) {
+
+        val roleEntity = roleRepository.findByName(role)
+
+        if (newState) {
+            userAccount.roles.add(roleEntity)
+        } else {
+            userAccount.roles.remove(roleEntity)
+        }
     }
 
     @Transactional
@@ -106,6 +110,7 @@ class UserAccountService(
                 userAccount.googleAccountId,
                 userAccount.hasRole(SecurityRole.REGISTERED_USER),
                 userAccount.hasRole(SecurityRole.ADMIN),
+                userAccount.hasRole(SecurityRole.ACTIVE_USER),
                 if (userAccount.metadata?.createdDate != null) {
                     at.wuzeln.manager.Utils.localDateTimeToLong(userAccount.metadata?.createdDate as LocalDateTime)
                 } else {

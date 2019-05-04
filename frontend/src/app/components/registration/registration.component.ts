@@ -57,7 +57,9 @@ export class RegistrationComponent implements OnInit {
     forkJoin(regObs, personsObs).subscribe(combined => {
       const [reg, persons] = combined;
 
-      this.persons = persons as PersonDtoView[];
+      this.persons = persons
+        .filter(one => one.active)
+        .sort((a, b) => (a.name > b.name) ? 1 : -1) as PersonDtoView[];
       this.refreshRegistration(reg)
     });
   }

@@ -40,7 +40,7 @@ class TestUtil {
 
 
     fun savePeopleWithAccounts(people: List<Person>): List<Person> {
-        people.forEach { it.userAccount = userAccountRepository.save(it.userAccount) }
+        people.forEach { it.userAccount = userAccountRepository.save(it.userAccount!!) }
         return personRepository.saveAll(people)
     }
 

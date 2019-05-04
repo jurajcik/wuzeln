@@ -87,7 +87,9 @@ export class ScoresComponent implements OnInit {
 
 
     this.wuzelnService.findAllPersons().subscribe(persons => {
-      const personIds = persons.map(one => one.id);
+      const personIds = persons
+        .filter( one => one.active)
+        .map(one => one.id);
       this.wuzelnService.getPersonalScoresHelp(personIds, this.from, this.to).subscribe(scores => {
 
         this.loadIdleScores(personIds, this.from, this.to)
