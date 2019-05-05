@@ -11,3 +11,4 @@ GRANT SELECT ON wuzeln.person TO grafana;
 GRANT SELECT ON wuzeln.match TO grafana;
 GRANT SELECT ON wuzeln.useraccount TO grafana;
 GRANT SELECT ON wuzeln.stats_player TO grafana;
+GRANT SELECT ON wuzeln.stats_match TO grafana;
