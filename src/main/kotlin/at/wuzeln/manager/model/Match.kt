@@ -3,6 +3,7 @@ package at.wuzeln.manager.model
 import at.wuzeln.manager.dao.MetadataInjector
 import at.wuzeln.manager.model.enums.MatchCreationMethod
 import at.wuzeln.manager.model.enums.TeamColor
+import at.wuzeln.manager.model.stat.MatchStats
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
@@ -45,6 +46,9 @@ data class Match(
 
     @Embedded
     override var metadata: EntityMetadata? = null
+
+    @OneToOne(mappedBy = "match", cascade = [CascadeType.ALL], orphanRemoval = true)
+    lateinit var stats: MatchStats
 
     fun hasFinished(): Boolean {
         return endDate != null

@@ -1,7 +1,6 @@
 package at.wuzeln.manager.job;
 
 import assertk.assertions.isEqualTo
-import at.wuzeln.manager.H2ConsoleUtil
 import at.wuzeln.manager.TestUtil
 import at.wuzeln.manager.config.AppConfig
 import at.wuzeln.manager.dao.*
@@ -53,7 +52,6 @@ open class RemoveStaleMatchesTest {
     @BeforeEach
     fun onSetUp() {
         TestUtil.mockSecurityContext()
-        H2ConsoleUtil.start()
     }
 
     fun createRegistrationAndMatchStartAndKickOneGoal() {
@@ -64,7 +62,7 @@ open class RemoveStaleMatchesTest {
         val registrationDto = RegistrationUpdateDto("testReg", people.map { RegistrationUpdateDto.RegPersonDto(it.id, true) })
 
         registrationService.updateRegistration(registrationId, registrationDto)
-        matchDto =  registrationService.generateMatchProposal(registrationId, MatchCreationMethod.BALANCED)
+        matchDto = registrationService.generateMatchProposal(registrationId, MatchCreationMethod.BALANCED)
 
         val matchId = matchService.createMatch(matchDto)
         matchService.startMatch(matchId)

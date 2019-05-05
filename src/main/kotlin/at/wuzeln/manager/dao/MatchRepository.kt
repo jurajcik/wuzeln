@@ -2,6 +2,8 @@ package at.wuzeln.manager.dao
 
 import at.wuzeln.manager.model.Match
 import at.wuzeln.manager.model.Person
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime
@@ -25,4 +27,6 @@ interface MatchRepository : JpaRepository<Match, Long> {
     fun countIdleMatchesForPerson(personId: Long, startDate: LocalDateTime, endDate: LocalDateTime): Int
 
     fun findByMetadata_CreatedDateBeforeAndEndDateIsNull(date: LocalDateTime): List<Match>
+
+    fun findAllByStatsIsNullAndEndDateIsNotNull(pageable: Pageable) : Slice<Match>
 }

@@ -26,6 +26,7 @@ class MatchService(
         private val matchRepository: MatchRepository,
         private val registrationService: RegistrationService,
         private val calculationService: CalculationService,
+        private val statsService: StatsService,
         @Value("\${match.goals.max}")
         private val maxGoalsInMatch: Int
 ) {
@@ -104,20 +105,25 @@ class MatchService(
         val nrReceivedGoals = goalRepository.countReceivedGoals(goalie.team)
 
         if (maxGoalsInMatch == nrReceivedGoals) {
-            match.endDate = goalDate
-
-            val winningTeam = if (own) player.team.otherTeam else player.team
-            winningTeam.winner = true
-
-            matchRepository.save(match)
-            playerRepository.save(player)
-
-            val otherGoalie = getGoalie(winningTeam)
-            otherGoalie.addMilisecondsInGoal(milisecondsInGoal(otherGoalie, goalDate) as Long)
-            playerRepository.save(otherGoalie)
-
-            calculationService.calculatePersonalScore(match.teamBlue.players.union(match.teamRed.players))
+            endMatch(match, goal)
         }
+    }
+
+    private fun endMatch(match: Match, goal: Goal) {
+
+        match.endDate = goal.date
+
+        val winningTeam = if (goal.own) goal.player.team.otherTeam else goal.player.team
+        winningTeam.winner = true
+
+        matchRepository.save(match)
+
+        val otherGoalie = getGoalie(winningTeam)
+        otherGoalie.addMilisecondsInGoal(milisecondsInGoal(otherGoalie, goal.date) as Long)
+        playerRepository.save(otherGoalie)
+
+        calculationService.calculatePersonalScore(match.teamBlue.players.union(match.teamRed.players))
+        statsService.createMatchStats(match.id)
     }
 
     @Transactional

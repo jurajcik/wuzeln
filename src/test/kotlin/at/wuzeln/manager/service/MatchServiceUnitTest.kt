@@ -19,8 +19,9 @@ import java.security.SecureRandom
 class MatchServiceUnitTest : AbstractServiceUnitTest() {
 
     var registrationService: RegistrationService = mock()
+    var statsService: StatsService = mock()
     var cut: MatchService = MatchService(
-            goalRepository, personRepository, playerRepository, matchRepository, registrationService,  mock(),10)
+            goalRepository, personRepository, playerRepository, matchRepository, registrationService,  mock(), statsService,10)
 
     @BeforeEach
     fun setup() {
