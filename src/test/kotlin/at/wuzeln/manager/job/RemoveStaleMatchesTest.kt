@@ -6,7 +6,9 @@ import at.wuzeln.manager.config.AppConfig
 import at.wuzeln.manager.dao.*
 import at.wuzeln.manager.dto.MatchCreationDto
 import at.wuzeln.manager.dto.RegistrationUpdateDto
+import at.wuzeln.manager.model.Role
 import at.wuzeln.manager.model.enums.MatchCreationMethod
+import at.wuzeln.manager.model.enums.SecurityRole
 import at.wuzeln.manager.service.MatchService
 import at.wuzeln.manager.service.RegistrationService
 import mu.KotlinLogging
@@ -33,6 +35,8 @@ open class RemoveStaleMatchesTest {
     @Autowired
     lateinit var matchService: MatchService
     @Autowired
+    lateinit var roalRepository: RoalRepository
+    @Autowired
     lateinit var matchRepository: MatchRepository
     @Autowired
     lateinit var teamRepository: TeamRepository
@@ -56,7 +60,12 @@ open class RemoveStaleMatchesTest {
 
     fun createRegistrationAndMatchStartAndKickOneGoal() {
 
-        var people = testUtil.savePeopleWithAccounts(TestUtil.createAllPeople())
+
+        var role = roalRepository.save(Role(0, SecurityRole.ACTIVE_USER))
+        var people = TestUtil.createAllPeople()
+        people.forEach { it.userAccount.roles.add(role) }
+
+        people = testUtil.savePeopleWithAccounts(people)
 
         val registrationId = registrationService.createRegistration("testReg")
         val registrationDto = RegistrationUpdateDto("testReg", people.map { RegistrationUpdateDto.RegPersonDto(it.id, true) })

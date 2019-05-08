@@ -100,7 +100,7 @@ class RegistrationService(
         val activePersons = reg.persons.filter { it.userAccount.hasRole(SecurityRole.ACTIVE_USER) }
 
         if (activePersons.size < playersMin) {
-            throw WuzelnException("The registration $regId contains ${activePersons.size} players that is less than the minimal number of players $playersMin")
+            throw WuzelnException("The registration $regId contains ${activePersons.size} active players that is less than the minimal number of players $playersMin")
         }
 
         val persons = ArrayList<Person>(activePersons)
