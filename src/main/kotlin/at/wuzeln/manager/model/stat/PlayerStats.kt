@@ -26,10 +26,23 @@ class PlayerStats(
 
         val scoreOffensiveNormalizedRange: Double,
 
-        val scoreDefensiveNormalizedRange: Double
+        val scoreDefensiveNormalizedRange: Double,
+
+        val winner: Boolean
 ) {
 
     override fun toString(): String {
-        return "PlayerStats(id=$id, player=$player, goalsSum=$goalsSum, goalsOwnSum=$goalsOwnSum, timeInGoalMillisSum=$timeInGoalMillisSum, scoreOffensive=$scoreOffensive, scoreDefensive=$scoreDefensive, scoreOffensiveNormalizedRange=$scoreOffensiveNormalizedRange, scoreDefensiveNormalizedRange=$scoreDefensiveNormalizedRange)"
+        return "PlayerStats(" +
+                "id=$id, " +
+                "player=$player, " +
+                "goalsSum=$goalsSum, " +
+                "goalsOwnSum=$goalsOwnSum, " +
+                "timeInGoalMillisSum=$timeInGoalMillisSum, " +
+                "scoreOffensive=$scoreOffensive, " +
+                "scoreDefensive=$scoreDefensive, " +
+                "scoreOffensiveNormalizedRange=$scoreOffensiveNormalizedRange, " +
+                "scoreDefensiveNormalizedRange=$scoreDefensiveNormalizedRange, " +
+                "winner=$winner" +
+                ")"
     }
 }

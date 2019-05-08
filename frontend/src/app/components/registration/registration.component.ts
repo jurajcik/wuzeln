@@ -1,13 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {WuzelnService} from "../../services/http/wuzeln.service";
-import {
-  MatchCreationDto,
-  MatchCreationMethod,
-  PersonDto,
-  RegistrationDto,
-  RegPersonDto
-} from "../../services/http/httpModel";
+import {MatchCreationDto, MatchCreationMethod, PersonDto, RegistrationDto} from "../../services/http/httpModel";
 import {forkJoin} from "rxjs/internal/observable/forkJoin";
 import {MatSlideToggleChange} from "@angular/material";
 import {CreateMatchComponent} from "../creation/create-match/create-match.component";
@@ -70,44 +64,50 @@ export class RegistrationComponent implements OnInit {
     this.persons.forEach(one => {
       const found = reg.persons.find(person => person === one.id);
       if (found) {
-        one.registered = true;
+        one.register = true;
       } else {
-        one.registered = false;
+        one.register = false;
       }
-      selected = selected && one.registered;
+      selected = selected && one.register;
     });
     this.allSelected = selected;
   }
 
   updateRegistration(event: MatSlideToggleChange, person: PersonDtoView) {
-    const persons = [{id: person.id, register: event.checked}];
-    this.updateRegistrationExecute(null, persons);
-    this.matchCreationDto = undefined;
-  }
 
-  updateRegistrationAll(event: MatSlideToggleChange) {
-    const persons: RegPersonDto[] = this.persons.map(one => {
-      return {id: one.id, register: event.checked}
+    if (event) {
+      if (person) {
+        person.register = event.checked
+      } else {
+        this.persons.forEach(one => one.register = event.checked)
+      }
+      this.matchCreationDto = undefined;
+    }
+
+    const personsDtos = this.persons.map(one => {
+      return {id: one.id, register: one.register}
     });
-    this.updateRegistrationExecute(null, persons);
-    this.matchCreationDto = undefined;
-  }
 
-  updateName() {
-    this.updateRegistrationExecute(this.registration.name, []);
-  }
-
-  updateRegistrationExecute(name: string, persons: RegPersonDto[]) {
     this.wuzelnService.updateRegistration(this.registration.id, {
-      name: name,
-      persons: persons
+      name: this.registration.name,
+      persons: personsDtos
     }).subscribe(reg => {
       this.refreshRegistration(reg)
     })
   }
 
   disableGenerateButton(): boolean {
-    return this.persons.filter(one => one.registered).length < this.minPlayers
+    return this.persons.filter(one => one.register).length < this.minPlayers
+  }
+
+  generateBalancedRandomizedMatch() {
+
+    let randomBoolean = Math.random() >= 0.5;
+    if (randomBoolean) {
+      this.generateMatch('BALANCED_RANDOMIZED')
+    } else {
+      this.generateMatch('BAL_RAN_WITH_VICTORIES')
+    }
   }
 
   generateMatch(method: MatchCreationMethod) {
@@ -142,5 +142,5 @@ export class RegistrationComponent implements OnInit {
 
 
 interface PersonDtoView extends PersonDto {
-  registered: boolean
+  register: boolean
 }

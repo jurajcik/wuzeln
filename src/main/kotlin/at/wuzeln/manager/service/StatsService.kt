@@ -51,6 +51,7 @@ class StatsService(
                 if (match.endDate != null) at.wuzeln.manager.Utils.localDateTimeToLong(match.endDate as LocalDateTime) else null,
                 duration,
                 match.getWinner(),
+                match.method,
                 allPlayerStatDto,
                 match.idlePersons.map { it.id }.sorted()
         )

@@ -11,6 +11,7 @@ import at.wuzeln.manager.model.Match
 import at.wuzeln.manager.model.Person
 import at.wuzeln.manager.model.Registration
 import at.wuzeln.manager.model.enums.MatchCreationMethod
+import at.wuzeln.manager.model.enums.SecurityRole
 import mu.KotlinLogging
 import org.apache.commons.collections4.ListUtils
 import org.springframework.beans.factory.annotation.Value
@@ -75,16 +76,12 @@ class RegistrationService(
     fun updateRegistration(regId: Long, regDto: RegistrationUpdateDto): RegistrationDto {
 
         var reg = getRegistrationOpened(regId)
+        reg.persons.clear()
 
         for (one in regDto.persons) {
             val person = personRepository.findById(one.id).orElseThrow { WuzelnException("The person ${one.id} does not exist") } as Person
-
             if (one.register) {
-                if (!reg.persons.contains(person)) {
-                    reg.persons.add(person)
-                }
-            } else {
-                reg.persons.remove(person)
+                reg.persons.add(person)
             }
         }
 
@@ -100,20 +97,39 @@ class RegistrationService(
     fun generateMatchProposal(regId: Long, method: MatchCreationMethod): MatchCreationDto {
         val reg = getRegistrationOpened(regId)
 
-        if (reg.persons.size < playersMin) {
-            throw WuzelnException("The registration $regId contains ${reg.persons.size} players that is less than the minimal number of players $playersMin")
+        val activePersons = reg.persons.filter { it.userAccount.hasRole(SecurityRole.ACTIVE_USER) }
+
+        if (activePersons.size < playersMin) {
+            throw WuzelnException("The registration $regId contains ${activePersons.size} players that is less than the minimal number of players $playersMin")
         }
 
-        val persons = ArrayList<Person>(reg.persons)
+        val persons = ArrayList<Person>(activePersons)
         persons.sortByDescending { it.idleMatches.size }
 
         val playingPersons = determinPlayingPersons(persons)
         val idlePersonsIds = separateIdlePersonsIds(persons, playingPersons)
         var teams = when (method) {
-            MatchCreationMethod.MANUAL -> throw WuzelnException("MANUAL method can not be used to generate a match proposal")
-            MatchCreationMethod.RANDOM -> generateRandomTeams(playingPersons)
-            MatchCreationMethod.BALANCED -> generateBalancedTeams(calculateScoresForProposal(playingPersons))
-            MatchCreationMethod.BALANCED_RANDOMIZED -> generateBalancedRandomizedTeams(calculateScoresForProposal(playingPersons))
+
+            MatchCreationMethod.MANUAL ->
+                throw WuzelnException("MANUAL method can not be used to generate a match proposal")
+
+            MatchCreationMethod.RANDOM ->
+                generateRandomTeams(playingPersons)
+
+            MatchCreationMethod.BALANCED ->
+                generateBalancedTeams(
+                        sortByOffensiveAndDefensive(
+                                calculateScoresForProposal(playingPersons)))
+
+            MatchCreationMethod.BALANCED_RANDOMIZED ->
+                generateBalancedRandomizedTeams(
+                        sortByOffensiveAndDefensive(
+                                calculateScoresForProposal(playingPersons)))
+
+            MatchCreationMethod.BAL_RAN_WITH_VICTORIES ->
+                generateBalancedRandomizedTeams(
+                        sortByOffensiveAndDefensiveAndVictory(
+                                calculateScoresForProposal(playingPersons)))
         }
 
         val dto = MatchCreationDto(reg.name, teams[0], teams[1], idlePersonsIds, method, regId)
@@ -147,7 +163,7 @@ class RegistrationService(
 
         for (oneCount in sortedCounts) {
             if (result.size == playersMax) {
-                break;
+                break
 
             } else if (countPersonMap[oneCount]!!.size + result.size <= playersMax) {
                 result.addAll(countPersonMap[oneCount]!!)
@@ -186,9 +202,17 @@ class RegistrationService(
         return calculationService.getPersonalScoreNormalized(playing.map { it.id }, startDate, endDate)
     }
 
-    fun generateBalancedTeams(personalScores: List<PersonalScoreDto>): List<List<Long>> {
+    private fun sortByOffensiveAndDefensive(personalScores: List<PersonalScoreDto>): List<PersonalScoreDto> {
+        return personalScores.sortedByDescending { it.scoreNormalized as Double }
+    }
 
-        val sortedScores = personalScores.sortedByDescending { it.scoreNormalized as Double }
+    private fun sortByOffensiveAndDefensiveAndVictory(personalScores: List<PersonalScoreDto>): List<PersonalScoreDto> {
+        personalScores.forEach { it.scoreNormalized = it.scoreNormalized!! + it.scoreVictoryNormalized!! }
+        return personalScores.sortedByDescending { it.scoreNormalized as Double }
+    }
+
+    fun generateBalancedTeams(sortedScores: List<PersonalScoreDto>): List<List<Long>> {
+
         val teamA = LinkedList<PersonalScoreDto>()
         val teamB = LinkedList<PersonalScoreDto>()
 
@@ -231,9 +255,8 @@ class RegistrationService(
         team.addLast(maxOffensive)
     }
 
-    fun generateBalancedRandomizedTeams(personalScores: List<PersonalScoreDto>): List<List<Long>> {
+    fun generateBalancedRandomizedTeams(sortedScores: List<PersonalScoreDto>): List<List<Long>> {
 
-        val sortedScores = personalScores.sortedByDescending { it.scoreNormalized as Double }
         val teamA = LinkedList<PersonalScoreDto>()
         val teamB = LinkedList<PersonalScoreDto>()
 

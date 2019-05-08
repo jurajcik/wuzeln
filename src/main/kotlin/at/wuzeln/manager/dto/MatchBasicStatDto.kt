@@ -1,5 +1,6 @@
 package at.wuzeln.manager.dto
 
+import at.wuzeln.manager.model.enums.MatchCreationMethod
 import at.wuzeln.manager.model.enums.TeamColor
 import com.fasterxml.jackson.annotation.JsonClassDescription
 
@@ -11,6 +12,7 @@ data class MatchBasicStatDto(
         val endDate: Long?,
         val durationMillis: Long?,
         val winner: TeamColor?,
+        val creationMethod: MatchCreationMethod,
         val players: List<PlayerStatDto>,
         val idlePersons: List<Long>
 ) {

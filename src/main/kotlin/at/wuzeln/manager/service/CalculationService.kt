@@ -1,6 +1,8 @@
 package at.wuzeln.manager.service
 
-import at.wuzeln.manager.dao.*
+import at.wuzeln.manager.dao.MatchRepository
+import at.wuzeln.manager.dao.PersonRepository
+import at.wuzeln.manager.dao.PlayerStatsRepository
 import at.wuzeln.manager.dto.IdleScoreDto
 import at.wuzeln.manager.dto.PersonalScoreDto
 import at.wuzeln.manager.model.Player
@@ -50,16 +52,21 @@ class CalculationService(
         return scores
     }
 
+    /**
+     * Normalize scores by average, so we can use them in the aggregated score.
+     */
     @Transactional
     protected fun normalizeScores(scores: List<PersonalScoreDto>) {
 
         val count = scores.size
         val avgOffensive = scores.sumByDouble { it.scoreOffensive } / count
         val avgDefensive = scores.sumByDouble { it.scoreDefensive } / count
+        val avgVictory = scores.sumByDouble { it.scoreVictory } / count
 
         scores.forEach {
             it.scoreOffensiveNormalized = if (avgOffensive != 0.0) it.scoreOffensive / avgOffensive else 0.0
             it.scoreDefensiveNormalized = if (avgDefensive != 0.0) it.scoreDefensive / avgDefensive else 0.0
+            it.scoreVictoryNormalized = if (avgDefensive != 0.0) it.scoreVictory / avgVictory else 0.0
             it.scoreNormalized = it.scoreOffensiveNormalized as Double + it.scoreDefensiveNormalized as Double
         }
     }
@@ -72,17 +79,21 @@ class CalculationService(
         val matchesPlayed = (stats[0] as Long).toInt()
 
         return if (matchesPlayed > 0) {
+            val matchesWon = (stats[6] as Long).toInt()
+
             PersonalScoreDto(
                     personId,
                     matchesPlayed,
+                    matchesWon,
                     (stats[1] as Long).toInt(),
                     (stats[2] as Long).toInt(),
                     (stats[3] as Long).toInt(),
                     round(stats[4] as Double / matchesPlayed),
-                    round(stats[5] as Double / matchesPlayed)
+                    round(stats[5] as Double / matchesPlayed),
+                    round(matchesWon.toDouble() / matchesPlayed)
             )
         } else {
-            PersonalScoreDto(personId, matchesPlayed, 0, 0, 0, 0.0, 0.0)
+            PersonalScoreDto(personId, matchesPlayed, 0, 0, 0, 0, 0.0, 0.0, 0.0)
         }
     }
 
@@ -121,6 +132,7 @@ class CalculationService(
             scoreDefensive = player.getMilisicondsInGoal() / (timeInGoalMillisAvg.toDouble())
         }
 
+        // this normalization only ensures that we can compare scores between matches with different number of players
         val scoreOffensiveNormalized = round(normalizeByRange(scoreOffensive, SCORE_OFFENSIVE_MIN, SCORE_OFFENSIVE_MAX))
         val scoreDefensiveNormalized = round(normalizeByRange(scoreDefensive, SCORE_DEFENSIVE_MIN, SCORE_DEFENSIVE_MAX))
 
@@ -133,7 +145,8 @@ class CalculationService(
                 scoreOffensive,
                 scoreDefensive,
                 scoreOffensiveNormalized,
-                scoreDefensiveNormalized)
+                scoreDefensiveNormalized,
+                player.team.winner)
 
         log.info("calculatePersonalScore(player=$player): $personalScore")
         return personalScore
