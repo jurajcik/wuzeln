@@ -21,6 +21,8 @@
         <appengine.sdk.version>1.9.71</appengine.sdk.version>
         <junit-jupiter.version>5.2.0</junit-jupiter.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <swagger.version>2.0.8</swagger.version>
+        <swagger-ui.version>3.17.0</swagger-ui.version>
     </properties>
 
     <dependencyManagement>
@@ -137,6 +139,26 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2-servlet-initializer</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-integration</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
 
         <dependency>
@@ -443,6 +465,13 @@
                             <directory>src/main/webapp</directory>
                             <filtering>true</filtering>
                         </resource>
+                        <resource>
+                            <directory>${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui.version}</directory>
+                            <includes>
+                                <include>**/*.*</include>
+                            </includes>
+                            <targetPath>swagger-ui</targetPath>
+                        </resource>
                     </webResources>
                 </configuration>
             </plugin>
@@ -453,6 +482,53 @@
                 <configuration>
                     <fullScanSeconds>1</fullScanSeconds>
                     <retainUploadDir>true</retainUploadDir>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Download Swagger UI webjar. -->
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.webjars</groupId>
+                                    <artifactId>swagger-ui</artifactId>
+                                    <version>${swagger-ui.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/swagger-ui</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Replace the OpenAPI specification example URL with the local one. -->
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui.version}/index.html</file>
+                    <replacements>
+                        <replacement>
+                            <token>http://petstore.swagger.io/v2/swagger.json</token>
+                            <value>/services/openapi.json</value>
+                        </replacement>
+                    </replacements>
                 </configuration>
             </plugin>
         </plugins>

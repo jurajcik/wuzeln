@@ -34,7 +34,7 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>at.wuzeln.manager.rest</param-value>
+            <param-value>at.wuzeln.manager.rest,io.swagger.v3.jaxrs2.integration.resources</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
