@@ -22,6 +22,7 @@ import java.io.IOException
 @Component
 class GoogleAccessTokenValidator(
         var clientId: String,
+        var androidClientId: String?,
         var checkTokenUrl: String
 ) : InitializingBean {
 
@@ -53,7 +54,7 @@ class GoogleAccessTokenValidator(
     @Throws(AuthenticationException::class)
     private fun validateResponse(response: Map<String, *>): Boolean {
         val aud = response["aud"] as String
-        return StringUtils.equals(aud, clientId)
+        return StringUtils.equals(aud, clientId) || (StringUtils.isNoneBlank(androidClientId ) && androidClientId == aud)
     }
 
     private fun getGoogleResponse(accessToken: String): Map<String, *> {

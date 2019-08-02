@@ -21,12 +21,16 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 @EnableWebSecurity
 @EnableResourceServer
 class ResourceServerConfiguration(
+
         @Value("\${oauth.clientId}")
         private val clientId: String,
         @Value("\${oauth.checkTokenUrl}")
         private val checkTokenUrl: String,
         @Value("\${oauth.userInfoUrl}")
-        private val userInfoUrl: String
+        private val userInfoUrl: String,
+        @Value("\${oauth.android.clientId:#{null}}")
+        private val androidClientId: String
+
 ) : ResourceServerConfigurerAdapter() {
 
 
@@ -43,7 +47,7 @@ class ResourceServerConfiguration(
 
     @Bean
     fun googleAccessTokenValidator(): GoogleAccessTokenValidator {
-        return GoogleAccessTokenValidator(clientId, checkTokenUrl)
+        return GoogleAccessTokenValidator(clientId, androidClientId, checkTokenUrl)
     }
 
     override fun configure(http: HttpSecurity) {
