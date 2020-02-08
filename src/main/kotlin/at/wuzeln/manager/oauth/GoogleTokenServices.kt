@@ -57,7 +57,7 @@ class GoogleTokenServices(
 
     private fun getAuthenticationToken(accessToken: String): Authentication {
         val userInfo = getUserInfo(accessToken)
-        val idStr = userInfo["id"] as String
+        val idStr = (userInfo["resourceName"] as String).substringAfter("/")
                 ?: throw InternalAuthenticationServiceException("Cannot get id from user info")
         val user = userAccountService.getUsernamePasswordAuthenticationTokenByGoogleAccountId(idStr)
 
