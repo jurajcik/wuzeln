@@ -79,6 +79,7 @@ class AppConfig {
         properties.setProperty(AvailableSettings.SHOW_SQL, env.getProperty("hibernate.show_sql", "false"))
         properties.setProperty(AvailableSettings.HBM2DDL_AUTO, env.getRequiredProperty("hibernate.hbm2ddl.auto"))
         properties.setProperty(AvailableSettings.DIALECT, env.getRequiredProperty("hibernate.dialect"))
+        properties.setProperty(AvailableSettings.DEFAULT_SCHEMA, env.getRequiredProperty("hibernate.default_schema"))
         return properties
     }
 
