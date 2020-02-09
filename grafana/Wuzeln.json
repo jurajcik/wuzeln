@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1552868657539,
+  "iteration": 1581262418529,
   "links": [],
   "panels": [
     {
@@ -163,11 +163,7 @@
         "values": true
       },
       "legendType": "Right side",
-      "links": [
-        {
-          "type": "dashboard"
-        }
-      ],
+      "links": [],
       "maxDataPoints": 3,
       "nullPointMode": "connected",
       "pieType": "pie",
@@ -219,7 +215,7 @@
       "decimals": null,
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 10,
         "w": 8,
         "x": 8,
         "y": 1
@@ -254,7 +250,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH winner_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null AND\r\n  t.winner = TRUE\r\nGROUP BY pe.nickname\r\n  ), \r\nall_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\nGROUP BY pe.nickname\r\n  )\r\n  \r\nSELECT wc.value / cast(ac.value as float) as value, \r\nac.nickname as metric,\r\nnow() as time\r\nFROM winner_count wc \r\nJOIN all_count ac ON wc.nickname = ac.nickname\r\nORDER BY value DESC\r\n",
+          "rawSql": "WITH winner_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null AND\r\n  t.winner = TRUE\r\nGROUP BY pe.nickname\r\n  ), \r\nall_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\nGROUP BY pe.nickname\r\n  )\r\n  \r\nSELECT wc.value / cast(ac.value as float) as value, \r\nac.nickname as metric,\r\nnow() as time\r\nFROM winner_count wc \r\nJOIN all_count ac ON wc.nickname = ac.nickname\r\nAND wc.nickname IN ( $nickname )\r\nORDER BY value DESC\r\n",
           "refId": "A",
           "select": [
             [
@@ -298,12 +294,12 @@
       },
       "yaxes": [
         {
-          "decimals": null,
+          "decimals": 2,
           "format": "percentunit",
           "label": "",
           "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "1",
+          "min": "0",
           "show": true
         },
         {
@@ -398,7 +394,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH winner_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null AND\r\n  t.winner = TRUE\r\nGROUP BY pe.nickname\r\n  ), \r\nall_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\nGROUP BY pe.nickname\r\n  )\r\n  \r\nSELECT \r\nac.nickname as name,\r\n(wc.value / cast(ac.value as float))*100 as value,\r\nac.value as \"nr. of played\",\r\nwc.value as \"nr. of won\"\r\nFROM winner_count wc \r\nJOIN all_count ac ON wc.nickname = ac.nickname\r\nORDER BY value DESC\r\n",
+          "rawSql": "WITH winner_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null AND\r\n  t.winner = TRUE\r\nGROUP BY pe.nickname\r\n  ), \r\nall_count as (\r\nSELECT\r\n count(m.id) AS \"value\",\r\n  pe.nickname AS nickname\r\nFROM wuzeln.person pe \r\n  JOIN wuzeln.player p ON p.person_id = pe.id\r\n  JOIN wuzeln.team t on t.id = p.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE\r\n  $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\nGROUP BY pe.nickname\r\n  )\r\n  \r\nSELECT \r\nac.nickname as name,\r\n(wc.value / cast(ac.value as float))*100 as value,\r\nac.value as \"nr. of played\",\r\nwc.value as \"nr. of won\"\r\nFROM winner_count wc \r\nJOIN all_count ac ON wc.nickname = ac.nickname\r\nWHERE wc.nickname IN ( $nickname )\r\nORDER BY value DESC\r\n",
           "refId": "A",
           "select": [
             [
@@ -496,49 +492,60 @@
       "valueName": "current"
     },
     {
-      "aliasColors": {
-        "DEFENDER": "#eab839",
-        "FORWARD": "#7eb26c",
-        "GOALKEEPER": "#ea843b",
-        "MIDFIELDER": "#6ed0e0"
-      },
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
-      },
-      "fontSize": "80%",
-      "format": "short",
+      "collapsed": false,
       "gridPos": {
-        "h": 5,
-        "w": 8,
+        "h": 1,
+        "w": 24,
         "x": 0,
-        "y": 11
+        "y": 14
       },
-      "id": 38,
-      "interval": null,
+      "id": 58,
+      "panels": [],
+      "title": "",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "Percentage of matches played with Andi  in the same team. Taking into consideration only matches where Andi played.",
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "id": 56,
       "legend": {
-        "percentage": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "values": true
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
       },
-      "legendType": "Right side",
+      "lines": false,
+      "linewidth": 1,
       "links": [],
-      "maxDataPoints": 3,
-      "nullPointMode": "connected",
-      "pieType": "pie",
-      "strokeWidth": 1,
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
           "format": "time_series",
           "group": [],
-          "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT \nnow() as time,\n  g.position, \n  count(*)\nFROM wuzeln.goal g\n  JOIN wuzeln.player pl ON g.goalie_id = pl.id \n  JOIN wuzeln.person pe ON pl.person_id = pe.id\nWHERE $__timeFilter(g.date) \n  AND pe.nickname IN( $nickname )\nGROUP BY g.position\n",
+          "rawSql": "WITH \r\nmatches_with_andi AS (\r\nSELECT distinct(m.*)\r\nFROM wuzeln.person pe \r\nJOIN wuzeln.player pl ON pe.id = pl.person_id\r\nJOIN wuzeln.team t ON pl.team_id = t.id\r\nJOIN wuzeln.match m on t.match_id = m.id\r\nWHERE pe.nickname = 'Andi' AND\r\n $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\n),\r\nwith_andi AS (\r\nSELECT pe.nickname, count(*) as count\r\nFROM wuzeln.person pe \r\nJOIN wuzeln.player pl ON pe.id = pl.person_id\r\nJOIN wuzeln.team t ON pl.team_id = t.id\r\nJOIN wuzeln.player pl2 ON pl2.team_id = t.id\r\nJOIN wuzeln.person pe2 ON pl2.person_id = pe2.id\r\nJOIN matches_with_andi m on m.id = t.match_id\r\nWHERE pe2.nickname = 'Andi'\r\nGROUP BY pe.nickname\r\nORDER BY count desc)\r\n\r\nSELECT\r\nwa.nickname as metric, \r\nTRUNC((cast(wa.count as decimal) / count(*))* 100, 2) as value,\r\nnow() as time\r\nFROM with_andi wa\r\nJOIN wuzeln.person pe ON wa.nickname = pe.nickname \r\nJOIN wuzeln.player pl ON pe.id = pl.person_id\r\nJOIN wuzeln.team t ON pl.team_id = t.id\r\nJOIN matches_with_andi m on m.id = t.match_id\r\nWHERE pe.nickname IN ( $nickname )\r\nGROUP BY wa.nickname, wa.count, pe.nickname\r\nORDER BY value desc",
           "refId": "A",
           "select": [
             [
@@ -560,9 +567,171 @@
           ]
         }
       ],
-      "title": "Goals Received (from Position)",
-      "type": "grafana-piechart-panel",
-      "valueName": "current"
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "With Andi in Team",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "total"
+        ]
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "percent",
+          "label": "",
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "columns": [],
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "id": 60,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 1,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Played with Andi in Team",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 0,
+          "pattern": "with_andi",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "All played (when Andi playing)",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "all_played",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Percentage",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "value",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH \r\nmatches_with_andi AS (\r\nSELECT distinct(m.*)\r\nFROM wuzeln.person pe \r\nJOIN wuzeln.player pl ON pe.id = pl.person_id\r\nJOIN wuzeln.team t ON pl.team_id = t.id\r\nJOIN wuzeln.match m on t.match_id = m.id\r\nWHERE pe.nickname = 'Andi' AND\r\n $__timeFilter(m.createddate) AND\r\n   m.enddate is not null\r\n),\r\nwith_andi AS (\r\nSELECT pe.nickname, count(*) as count\r\nFROM wuzeln.person pe \r\nJOIN wuzeln.player pl ON pe.id = pl.person_id\r\nJOIN wuzeln.team t ON pl.team_id = t.id\r\nJOIN wuzeln.player pl2 ON pl2.team_id = t.id\r\nJOIN wuzeln.person pe2 ON pl2.person_id = pe2.id\r\nJOIN matches_with_andi m on m.id = t.match_id\r\nWHERE pe2.nickname = 'Andi'\r\nGROUP BY pe.nickname\r\nORDER BY count desc)\r\n\r\nSELECT\r\nwa.nickname as metric, \r\nTRUNC((cast(wa.count as decimal) / count(*))* 100, 2) as value,\r\nwa.count as with_andi, count(*) as all_played\r\nFROM with_andi wa\r\nJOIN wuzeln.person pe ON wa.nickname = pe.nickname \r\nJOIN wuzeln.player pl ON pe.id = pl.person_id\r\nJOIN wuzeln.team t ON pl.team_id = t.id\r\nJOIN matches_with_andi m on m.id = t.match_id\r\nWHERE pe.nickname IN ( $nickname )\r\nGROUP BY wa.nickname, wa.count, pe.nickname\r\nORDER BY value desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "With Andi in Team",
+      "transform": "table",
+      "type": "table"
     },
     {
       "collapsed": false,
@@ -570,7 +739,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 29
       },
       "id": 17,
       "panels": [],
@@ -588,7 +757,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 30
       },
       "id": 23,
       "legend": {
@@ -696,7 +865,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 30
       },
       "id": 24,
       "legend": {
@@ -805,7 +974,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 27
+        "y": 40
       },
       "id": 14,
       "legend": {
@@ -913,7 +1082,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 27
+        "y": 40
       },
       "id": 15,
       "legend": {
@@ -1015,7 +1184,427 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 49
+      },
+      "id": 54,
+      "panels": [],
+      "title": "Match Quality",
+      "type": "row"
+    },
+    {
+      "columns": [],
+      "description": "Score is computed as: looser_goals / winner_goals.\nQuality is normalized to: min=0, max=0.9",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 0,
+        "y": 50
+      },
+      "id": 46,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 1,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "matches",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "quality",
+          "thresholds": [],
+          "type": "number",
+          "unit": "percent"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nm.method as method , \navg( ((cast(sm.looserscore as double precision )/ sm.winnerscore)/0.9)*100) as \"avg quality\",\navg( cast(sm.looserscore as double precision )/ sm.winnerscore) as \"avg score\",\ncount(m) as matches\nFROM wuzeln.stats_match sm\nJOIN wuzeln.match m ON m.id = sm.match_id\nWHERE $__timeFilter(m.createddate)\nGROUP BY method\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Match Quality",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "aliasColors": {
+        "BALANCED": "dark-yellow",
+        "BALANCED_COUNT": "light-yellow",
+        "BALANCED_RANDOMIZED": "dark-blue",
+        "BALANCED_RANDOMIZED_COUNT": "light-blue",
+        "BAL_RAN_WITH_VICTORIES": "dark-purple",
+        "BAL_RAN_WITH_VICTORIES_COUNT": "light-purple",
+        "MANUAL": "dark-green",
+        "MANUAL_COUNT": "light-green"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 10,
+        "w": 13,
+        "x": 11,
+        "y": 50
+      },
+      "id": 52,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "BALANCED_RANDOMIZED_COUNT",
+          "yaxis": 2
+        },
+        {
+          "alias": "BALANCED_COUNT",
+          "yaxis": 2
+        },
+        {
+          "alias": "MANUAL_COUNT",
+          "yaxis": 2
+        },
+        {
+          "alias": "BALANCED_RANDOMIZED",
+          "fill": 0,
+          "linewidth": 3
+        },
+        {
+          "alias": "BALANCED",
+          "fill": 0,
+          "linewidth": 3
+        },
+        {
+          "alias": "MANUAL",
+          "fill": 0,
+          "linewidth": 3
+        },
+        {
+          "alias": "BAL_RAN_WITH_VICTORIES",
+          "linewidth": 3
+        },
+        {
+          "alias": "BAL_RAN_WITH_VICTORIES_COUNT",
+          "yaxis": 2
+        }
+      ],
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nm.method as metric , \navg( ((cast(sm.looserscore as double precision )/ sm.winnerscore)/0.9)*100) as value,\n date_trunc('month', m.createddate) as time\nFROM wuzeln.stats_match sm\nJOIN wuzeln.match m ON m.id = sm.match_id\nWHERE $__timeFilter(m.createddate)\nGROUP BY metric, time\nORDER BY time\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \n(m.method || '_COUNT') as metric , \ncount(m) as value,\n date_trunc('month', m.createddate) as time\nFROM wuzeln.stats_match sm\nJOIN wuzeln.match m ON m.id = sm.match_id\nWHERE $__timeFilter(m.createddate)\nGROUP BY metric, time\nORDER BY time\n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Match Quality over Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": "Quality",
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": "Nr. of Matches",
+          "logBase": 1,
+          "max": "100",
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 0,
+        "y": 55
+      },
+      "id": 50,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "MANUAL",
+          "color": "#37872D"
+        },
+        {
+          "alias": "BALANCED_RANDOMIZED",
+          "color": "#1F60C4"
+        },
+        {
+          "alias": "BALANCED",
+          "color": "#E0B400"
+        },
+        {
+          "alias": "BAL_RAN_WITH_VICTORIES",
+          "color": "#8F3BB8"
+        }
+      ],
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nm.method as metric , \navg( ((cast(sm.looserscore as double precision )/ sm.winnerscore)/0.9)*100) as value,\nnow() as time\nFROM wuzeln.stats_match sm\nJOIN wuzeln.match m ON m.id = sm.match_id\nGROUP BY metric\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Match Quality",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "total"
+        ]
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "100",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 60
       },
       "id": 34,
       "panels": [],
@@ -1034,18 +1623,18 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 37
+        "y": 61
       },
       "id": 32,
       "legend": {
         "alignAsTable": true,
         "avg": true,
-        "current": true,
+        "current": false,
         "max": true,
         "min": true,
         "rightSide": false,
-        "show": false,
-        "total": true,
+        "show": true,
+        "total": false,
         "values": true
       },
       "lines": false,
@@ -1142,17 +1731,17 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 37
+        "y": 61
       },
       "id": 35,
       "legend": {
         "alignAsTable": true,
         "avg": true,
-        "current": true,
+        "current": false,
         "max": true,
         "min": true,
-        "show": false,
-        "total": true,
+        "show": true,
+        "total": false,
         "values": true
       },
       "lines": false,
@@ -1250,7 +1839,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 45
+        "y": 69
       },
       "id": 4,
       "legend": {
@@ -1260,7 +1849,7 @@
         "max": true,
         "min": true,
         "rightSide": false,
-        "show": false,
+        "show": true,
         "total": true,
         "values": true
       },
@@ -1378,14 +1967,14 @@
           "value": "$__all"
         },
         "datasource": "wuzeln google",
-        "definition": "SELECT p.nickname FROM wuzeln.person p",
+        "definition": "SELECT p.nickname  FROM wuzeln.person p  JOIN wuzeln.useraccount u ON p.useraccount_id = u.id  JOIN wuzeln.useraccount_role ur ON u.id = ur.useraccount_id JOIN wuzeln.role r ON r.id = ur.roles_id WHERE r.name = 'ACTIVE_USER'",
         "hide": 0,
         "includeAll": true,
         "label": "player",
         "multi": true,
         "name": "nickname",
         "options": [],
-        "query": "SELECT p.nickname FROM wuzeln.person p",
+        "query": "SELECT p.nickname  FROM wuzeln.person p  JOIN wuzeln.useraccount u ON p.useraccount_id = u.id  JOIN wuzeln.useraccount_role ur ON u.id = ur.useraccount_id JOIN wuzeln.role r ON r.id = ur.roles_id WHERE r.name = 'ACTIVE_USER'",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1399,7 +1988,7 @@
     ]
   },
   "time": {
-    "from": "now-1y",
+    "from": "now-2y",
     "to": "now"
   },
   "timepicker": {
@@ -1423,5 +2012,5 @@
   "timezone": "",
   "title": "Wuzeln",
   "uid": "9bf9qR_mk",
-  "version": 12
+  "version": 27
 }

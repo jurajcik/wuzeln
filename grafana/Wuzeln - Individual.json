@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1552868683861,
+  "iteration": 1581262467195,
   "links": [],
   "panels": [
     {
@@ -315,6 +315,83 @@
         "x": 0,
         "y": 8
       },
+      "id": 8,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "type": "dashboard"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": "1",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  goaliePerson.nickname,\r\n  now() as time,\r\n  count(*) as count\r\nFROM wuzeln.goal g\r\n  JOIN wuzeln.player goalie ON g.goalie_id = goalie.id\r\n  JOIN wuzeln.player kicker ON g.player_id = kicker.id\r\n  JOIN wuzeln.person goaliePerson ON goalie.person_id = goaliePerson.id\r\n  JOIN wuzeln.person kickerPerson ON kicker.person_id = kickerPerson.id\r\n  JOIN wuzeln.team t on t.id = kicker.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE m.enddate IS NOT NULL \r\n  AND $__timeFilter(m.createddate)\r\n  AND kickerPerson.nickname = '$nickname'\r\nGROUP BY goaliePerson.nickname\r\nORDER BY count",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Prey",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {
+        "BLUE": "#3f51b5",
+        "RED": "#d32f2f"
+      },
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "fontSize": "110%",
+      "format": "short",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
       "id": 2,
       "interval": null,
       "legend": {
@@ -375,8 +452,10 @@
     },
     {
       "aliasColors": {
-        "BLUE": "#3f51b5",
-        "RED": "#d32f2f"
+        "DEFENDER": "#eab839",
+        "FORWARD": "#7eb26c",
+        "GOALKEEPER": "#ea843b",
+        "MIDFIELDER": "#6ed0e0"
       },
       "breakPoint": "50%",
       "cacheTimeout": null,
@@ -384,33 +463,29 @@
         "label": "Others",
         "threshold": 0
       },
-      "fontSize": "110%",
+      "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 9,
+        "h": 5,
         "w": 8,
-        "x": 8,
-        "y": 8
+        "x": 0,
+        "y": 17
       },
-      "id": 8,
+      "id": 10,
       "interval": null,
       "legend": {
         "percentage": true,
         "show": true,
-        "sort": "total",
+        "sort": "current",
         "sortDesc": true,
         "values": true
       },
       "legendType": "Right side",
-      "links": [
-        {
-          "type": "dashboard"
-        }
-      ],
+      "links": [],
       "maxDataPoints": 3,
       "nullPointMode": "connected",
       "pieType": "pie",
-      "strokeWidth": "1",
+      "strokeWidth": 1,
       "targets": [
         {
           "format": "time_series",
@@ -418,7 +493,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  goaliePerson.nickname,\r\n  now() as time,\r\n  count(*) as count\r\nFROM wuzeln.goal g\r\n  JOIN wuzeln.player goalie ON g.goalie_id = goalie.id\r\n  JOIN wuzeln.player kicker ON g.player_id = kicker.id\r\n  JOIN wuzeln.person goaliePerson ON goalie.person_id = goaliePerson.id\r\n  JOIN wuzeln.person kickerPerson ON kicker.person_id = kickerPerson.id\r\n  JOIN wuzeln.team t on t.id = kicker.team_id\r\n  JOIN wuzeln.match m on m.id = t.match_id\r\nWHERE m.enddate IS NOT NULL \r\n  AND $__timeFilter(m.createddate)\r\n  AND kickerPerson.nickname = '$nickname'\r\nGROUP BY goaliePerson.nickname\r\nORDER BY count",
+          "rawSql": "SELECT \nnow() as time,\n  g.position, \n  count(*)\nFROM wuzeln.goal g\n  JOIN wuzeln.player pl ON g.player_id = pl.id \n  JOIN wuzeln.person pe ON pl.person_id = pe.id\nWHERE $__timeFilter(g.date) \n  AND pe.nickname = '$nickname' \nGROUP BY g.position\n",
           "refId": "A",
           "select": [
             [
@@ -427,12 +502,6 @@
                   "value"
                 ],
                 "type": "column"
-              },
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "alias"
               }
             ]
           ],
@@ -446,9 +515,78 @@
           ]
         }
       ],
-      "title": "Prey",
+      "title": "Goals Shot (from Position)",
       "type": "grafana-piechart-panel",
-      "valueName": "total"
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {
+        "DEFENDER": "#eab839",
+        "FORWARD": "#7eb26c",
+        "GOALKEEPER": "#ea843b",
+        "MIDFIELDER": "#6ed0e0"
+      },
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 17
+      },
+      "id": 12,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \nnow() as time,\n  g.position, \n  count(*)\nFROM wuzeln.goal g\n  JOIN wuzeln.player pl ON g.goalie_id = pl.id \n  JOIN wuzeln.person pe ON pl.person_id = pe.id\nWHERE $__timeFilter(g.date) \n  AND pe.nickname = '$nickname'\nGROUP BY g.position\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Goals Received (from Position)",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
     }
   ],
   "schemaVersion": 18,
@@ -515,5 +653,5 @@
   "timezone": "",
   "title": "Wuzeln - Individual",
   "uid": "e6blEv3mk",
-  "version": 4
+  "version": 5
 }
