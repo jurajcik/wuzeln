@@ -155,33 +155,6 @@ class RegistrationService(
     }
 
 
-    fun determinPlayingPersonsByIdleMatches(persons: List<Person>): MutableList<Person> {
-
-        val countPersonMap = persons.groupBy { it.idleMatches.size }
-        val sortedCounts = countPersonMap.keys.sortedDescending()
-        val result = ArrayList<Person>()
-
-        for (oneCount in sortedCounts) {
-            if (result.size == playersMax) {
-                break
-
-            } else if (countPersonMap[oneCount]!!.size + result.size <= playersMax) {
-                result.addAll(countPersonMap[oneCount]!!)
-
-            } else {
-                val personDatesMap = HashMap<Person, LocalDateTime>()
-                for (one in countPersonMap[oneCount]!!) {
-                    val date = matchRepository.findDateOfLastPlayedMatchForPerson(one) ?: LocalDateTime.MIN;
-                    personDatesMap.put(one, date!!)
-                }
-                val sortedPersons = countPersonMap[oneCount]!!.sortedBy { personDatesMap[it] }
-                val lastPersonIndex = (playersMax - result.size)
-                result.addAll(sortedPersons.subList(0, lastPersonIndex))
-            }
-        }
-        return result
-    }
-
     fun separateIdlePersonsIds(persons: List<Person>, playingPersons: List<Person>): Set<Long> {
         val ids = playingPersons.map { it.id }.toSet()
         return persons.filterNot { ids.contains(it.id) }.map { it.id }.toSet()
