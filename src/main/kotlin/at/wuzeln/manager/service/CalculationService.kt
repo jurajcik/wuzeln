@@ -161,7 +161,7 @@ class CalculationService(
     }
 
     @Transactional
-    fun calculateIdleScore(personIds: List<Long>, startDate: LocalDateTime, endDate: LocalDateTime): MutableList<IdleScoreDto> {
+    fun calculateActiveScore(personIds: List<Long>, startDate: LocalDateTime, endDate: LocalDateTime): MutableList<IdleScoreDto> {
 
         val persons = personRepository.findAllById(personIds)
         val personScores = ArrayList<IdleScoreDto>()

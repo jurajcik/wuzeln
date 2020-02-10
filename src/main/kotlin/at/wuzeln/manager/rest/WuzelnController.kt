@@ -58,7 +58,7 @@ class WuzelnController(
     ): List<IdleScoreDto> {
         // TODO SEC: check all personIds in caller groups
 
-        return calculationService.calculateIdleScore(personIds, at.wuzeln.manager.Utils.longToLocalDateTime(from), at.wuzeln.manager.Utils.longToLocalDateTime(to))
+        return calculationService.calculateActiveScore(personIds, at.wuzeln.manager.Utils.longToLocalDateTime(from), at.wuzeln.manager.Utils.longToLocalDateTime(to))
     }
     // matches
 

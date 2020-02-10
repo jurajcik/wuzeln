@@ -34,6 +34,7 @@ class UserAccountService(
         }
     }
 
+    @Throws(WuzelnException::class)
     @Transactional
     fun register(username: String, googleAccountId: String?, active: Boolean): Long {
 
@@ -52,6 +53,7 @@ class UserAccountService(
         return userAccountRepository.save(userAccount).id
     }
 
+    @Throws(WuzelnException::class)
     @Transactional
     fun getUserAccount(username: String): UserAccountDto {
 
@@ -61,6 +63,7 @@ class UserAccountService(
         return mapUserAccount(userAccount)
     }
 
+    @Throws(WuzelnException::class)
     @Transactional
     fun updateUserAccount(username: String, userAccountDto: UserAccountUpdateAdminDto) {
 
@@ -72,6 +75,14 @@ class UserAccountService(
         manageRole(userAccount, SecurityRole.REGISTERED_USER, userAccountDto.registered)
 
         userAccountRepository.save(userAccount)
+    }
+
+    @Transactional
+    fun getUserAccounts(): List<UserAccountDto> {
+
+        val userAccounts = userAccountRepository.findAll()
+
+        return userAccounts.map { mapUserAccount(it) }
     }
 
     private fun manageRole(
@@ -86,22 +97,6 @@ class UserAccountService(
         } else {
             userAccount.roles.remove(roleEntity)
         }
-    }
-
-    @Transactional
-    fun getUserAccounts(): List<UserAccountDto> {
-
-        val userAccounts = userAccountRepository.findAll()
-
-        return userAccounts.map { mapUserAccount(it) }
-    }
-
-    @Transactional
-    fun getUserAccountsByRole(securityRole: SecurityRole): List<UserAccountDto> {
-
-        val userAccounts = userAccountRepository.findByRoles_name(securityRole)
-
-        return userAccounts.map { mapUserAccount(it) }
     }
 
     fun mapUserAccount(userAccount: UserAccount): UserAccountDto {

@@ -145,7 +145,7 @@ class RegistrationService(
         val endDate = LocalDateTime.now()
         val startDate = endDate.minusMonths(proposalCalculationMonths)
 
-        return calculationService.calculateIdleScore(tempMap.keys.toList(), startDate, endDate)
+        return calculationService.calculateActiveScore(tempMap.keys.toList(), startDate, endDate)
                 .sortedBy { it.score }
                 .take(playersMax)
                 .map {
