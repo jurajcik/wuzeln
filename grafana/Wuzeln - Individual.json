@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1581262467195,
+  "iteration": 1595158618303,
   "links": [],
   "panels": [
     {
@@ -37,15 +37,15 @@
       },
       "id": 4,
       "legend": {
-        "alignAsTable": true,
-        "avg": true,
+        "alignAsTable": false,
+        "avg": false,
         "current": false,
-        "max": true,
-        "min": true,
+        "max": false,
+        "min": false,
         "rightSide": false,
-        "show": false,
+        "show": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -176,15 +176,15 @@
       },
       "id": 6,
       "legend": {
-        "alignAsTable": true,
-        "avg": true,
+        "alignAsTable": false,
+        "avg": false,
         "current": false,
-        "max": true,
-        "min": true,
+        "max": false,
+        "min": false,
         "rightSide": false,
-        "show": false,
+        "show": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -601,14 +601,14 @@
           "value": "Chris"
         },
         "datasource": "wuzeln google",
-        "definition": "SELECT p.nickname FROM wuzeln.person p",
+        "definition": "SELECT p.nickname  FROM wuzeln.person p  JOIN wuzeln.useraccount u ON p.useraccount_id = u.id  JOIN wuzeln.useraccount_role ur ON u.id = ur.useraccount_id JOIN wuzeln.role r ON r.id = ur.roles_id WHERE r.name = 'ACTIVE_USER'",
         "hide": 0,
         "includeAll": false,
         "label": "player",
         "multi": false,
         "name": "nickname",
         "options": [],
-        "query": "SELECT p.nickname FROM wuzeln.person p",
+        "query": "SELECT p.nickname  FROM wuzeln.person p  JOIN wuzeln.useraccount u ON p.useraccount_id = u.id  JOIN wuzeln.useraccount_role ur ON u.id = ur.useraccount_id JOIN wuzeln.role r ON r.id = ur.roles_id WHERE r.name = 'ACTIVE_USER'",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -622,7 +622,7 @@
     ]
   },
   "time": {
-    "from": "now-1y",
+    "from": "now-2y",
     "to": "now"
   },
   "timepicker": {
@@ -653,5 +653,5 @@
   "timezone": "",
   "title": "Wuzeln - Individual",
   "uid": "e6blEv3mk",
-  "version": 5
+  "version": 8
 }
