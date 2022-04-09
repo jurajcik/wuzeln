@@ -27,7 +27,7 @@
     "core-js": "~2.5.4",
     "material-design-icons-iconfont": "~4.0.2",
     "mobile-drag-drop": "~2.3.0-rc.1",
-    "moment": "~2.22.2",
+    "moment": "~2.29.2",
     "ng-drag-drop": "~5.0.0",
     "ng-gapi": "0.0.6",
     "ng-http-loader": "~3.2.0",
